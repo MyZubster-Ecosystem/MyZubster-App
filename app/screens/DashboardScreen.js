@@ -138,6 +138,18 @@ export default function DashboardScreen({ navigation }) {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            style={styles.notifButton}
+            onPress={() => navigation.navigate('NotificationHistory')}
+          >
+            <Text style={styles.orbotButtonText}>🔔</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.settingsButton}
+            onPress={() => navigation.navigate('NotificationSettings')}
+          >
+            <Text style={styles.orbotButtonText}>⚙️</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.createButton}
             onPress={() => navigation.navigate('CreateOrder')}
           >
@@ -194,6 +206,22 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
+  },
+  notifButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    backgroundColor: '#333',
+    marginLeft: 8,
+  },
+  settingsButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    backgroundColor: '#444',
+    marginLeft: 8,
   },
   orbotConnected: { backgroundColor: '#4CAF50' },
   orbotDisconnected: { backgroundColor: '#7B2FBE' },
