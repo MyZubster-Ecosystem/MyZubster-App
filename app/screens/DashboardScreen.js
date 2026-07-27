@@ -13,12 +13,14 @@ import {
   Platform,
 } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
+import { NotificationContext } from '../context/NotificationContext';
 import { useLanguage } from '../context/LanguageContext';
 import api from '../services/api';
 import { connectOrbot, isOrbotInstalled, isOrbotConnected } from '../services/orbotService';
 
 export default function DashboardScreen({ navigation }) {
   const { user, token } = useContext(AuthContext);
+  const { unreadCount } = useContext(NotificationContext);
   const { t } = useLanguage();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -138,6 +140,19 @@ export default function DashboardScreen({ navigation }) {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            style={styles.notificationButton}
+            onPress={() => navigation.navigate('NotificationHistory')}
+          >
+            <Text style={styles.notificationIcon}>🔔</Text>
+            {unreadCount > 0 && (
+              <View style={styles.notificationBadge}>
+                <Text style={styles.notificationBadgeText}>
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.createButton}
             onPress={() => navigation.navigate('CreateOrder')}
           >
@@ -198,6 +213,25 @@ const styles = StyleSheet.create({
   orbotConnected: { backgroundColor: '#4CAF50' },
   orbotDisconnected: { backgroundColor: '#7B2FBE' },
   orbotButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
+  notificationButton: {
+    position: 'relative',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  notificationIcon: { fontSize: 22 },
+  notificationBadge: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: '#f44336',
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  notificationBadgeText: { color: '#fff', fontSize: 10, fontWeight: 'bold' },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
   list: { paddingBottom: 20 },
   orderCard: {
