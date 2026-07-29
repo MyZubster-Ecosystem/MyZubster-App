@@ -1,4 +1,9 @@
 > **Part of the [MyZubster ecosystem](https://github.com/MyZubster-Ecosystem/myzubster)**
+[![License](https://img.shields.io/github/license/DanielIoni-creator/MyZubster-App](LICENSE)) 
+[![GitHub stars](https://img.shields.io/github/stars/DanielIoni-creator/MyZubster-App](https://github.com/DanielIoni-creator/MyZubster-App/stargazers)) 
+[![GitHub issues](https://img.shields.io/github/issues/DanielIoni-creator/MyZubster-App](https://github.com/DanielIoni-creator/MyZubster-App/issues)) 
+[![GitHub last commit](https://img.shields.io/github/last-commit/DanielIoni-creator/MyZubster-App](https://github.com/DanielIoni-creator/MyZubster-App/commits/main)) 
+[![Node.js](https://img.shields.io/badge/Node.js-18.x-green)](https://nodejs.org/)
 
 > **Part of the [MyZubster ecosystem](https://github.com/MyZubster-Ecosystem/myzubster)**
 
