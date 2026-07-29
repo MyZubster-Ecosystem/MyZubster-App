@@ -242,3 +242,7 @@ Follow the development of MyZubster and connect with me on social media:
 - 🎵 **TikTok**: [@h4x0r_23](https://www.tiktok.com/@h4x0r_23)
 
 **Stay updated on the journey!** 🚀
+
+## 🤝 Contributi
+
+Contributi sono benvenuti! Dai un'occhiata alle [issue aperte]([Issues](https://github.com/DanielIoni-creator/MyZubster-App/issues)) e alla [roadmap]([Roadmap](https://github.com/users/DanielIoni-creator/projects/1)).
