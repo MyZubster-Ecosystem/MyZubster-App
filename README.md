@@ -1,5 +1,7 @@
 > **Part of the [MyZubster ecosystem](https://github.com/MyZubster-Ecosystem/myzubster)**
 
+> **Part of the [MyZubster ecosystem](https://github.com/MyZubster-Ecosystem/myzubster)**
+
 # 📱 MyZubster – Service Exchange App
 
 **MyZubster** is a mobile application that connects people who offer services with those who need them. It’s a complete ecosystem for service exchange, built on privacy, security, and direct peer‑to‑peer interaction – powered by Monero payments.
