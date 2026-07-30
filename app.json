@@ -9,9 +9,14 @@
       "android"
     ],
     "android": {
-      "package": "com.anonymous.myzubsterapp"
+      "package": "com.anonymous.myzubsterapp",
+      "permissions": ["CAMERA"]
     },
+    "plugins": [
+      ["expo-camera", { "cameraPermission": "Consenti a MyZubster di scansionare indirizzi Monero.", "recordAudioAndroid": false }]
+    ],
     "extra": {
+      "apiUrl": "http://192.168.1.10:3000/api",
       "eas": {
         "projectId": "066d68ca-b5ec-4ec3-94cf-e5cf8890718d"
       }

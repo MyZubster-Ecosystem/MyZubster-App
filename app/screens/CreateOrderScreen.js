@@ -2,10 +2,10 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import api from '../services/api';
+import { createOrder } from '../services/orderService';
 
 export default function CreateOrderScreen({ navigation }) {
-  const { token } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { t } = useLanguage();
   const [skillId, setSkillId] = useState('');
   const [amount, setAmount] = useState('');
@@ -20,17 +20,15 @@ export default function CreateOrderScreen({ navigation }) {
 
     setLoading(true);
     try {
-      const response = await api.post('/orders', {
-        skillId: parseInt(skillId),
+      const order = await createOrder({
+        skillId,
         amount: parseFloat(amount),
-        currency,
-        customerEmail: 'user@example.com'
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
+        currency: currency.trim().toUpperCase(),
+        customerEmail: user?.email,
       });
 
       Alert.alert('✅ ' + t('common.success'), t('createOrder.successMessage'));
-      navigation.navigate('Order', { orderId: response.data.id });
+      navigation.navigate('Order', { orderId: order.id || order._id });
     } catch (error) {
       console.error('Errore creazione ordine:', error);
       Alert.alert('❌ ' + t('createOrder.error'), error.response?.data?.error || t('createOrder.errorMessage'));

@@ -1,169 +1,49 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator, RefreshControl } from 'react-native';
-import { AuthContext } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import api from '../services/api';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
+import QRCode from 'react-native-qrcode-svg';
+import { getOrderPaymentStatus } from '../services/orderService';
+
+const xmr = value => Number(value || 0).toFixed(8);
 
 export default function OrderScreen({ route, navigation }) {
-  const { token } = useContext(AuthContext);
-  const { t } = useLanguage();
   const { orderId } = route.params;
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchOrder();
+  const load = useCallback(async (refresh = false) => {
+    if (refresh) setRefreshing(true); else setLoading(true);
+    try { setOrder(await getOrderPaymentStatus(orderId)); setError(null); }
+    catch (err) { setError(err.response?.data?.error || err.message || 'Ordine non disponibile.'); }
+    finally { setLoading(false); setRefreshing(false); }
   }, [orderId]);
 
-  const fetchOrder = async () => {
-    try {
-      const response = await api.get(`/orders/${orderId}/payment-status`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setOrder(response.data);
-    } catch (error) {
-      console.error('Errore recupero ordine:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+  useEffect(() => {
+    load();
+    const timer = setInterval(() => {
+      if (order?.status === 'pending') load(true);
+    }, 15000);
+    return () => clearInterval(timer);
+  }, [load, order?.status]);
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchOrder();
-  };
+  const copy = async address => { await Clipboard.setStringAsync(address); Alert.alert('Copiato', 'Indirizzo Monero copiato.'); };
+  const isPending = order?.status === 'pending' || order?.status === 'confirmed';
 
-  const copyToClipboard = async (text) => {
-    await Clipboard.setStringAsync(text);
-    Alert.alert('✅ ' + t('order.copied'), t('order.copiedMessage'));
-  };
+  if (loading) return <View style={styles.center}><ActivityIndicator size="large" color="#4CAF50" /><Text>Caricamento ordine…</Text></View>;
+  if (error || !order) return <View style={styles.center}><Text style={styles.error}>{error || 'Ordine non trovato'}</Text><TouchableOpacity onPress={() => navigation.goBack()}><Text style={styles.back}>‹ Indietro</Text></TouchableOpacity></View>;
 
-  const getStatusText = (status) => {
-    const statusMap = {
-      'pending': t('dashboard.status.pending'),
-      'completed': t('dashboard.status.completed'),
-      'cancelled': t('dashboard.status.cancelled'),
-    };
-    return statusMap[status] || status.toUpperCase();
-  };
-
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#4CAF50" />
-        <Text style={{ marginTop: 10 }}>{t('common.loading')}</Text>
-      </View>
-    );
-  }
-
-  if (!order) {
-    return (
-      <View style={styles.center}>
-        <Text>❌ {t('order.notFound')}</Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>{t('order.back')}</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  const isCompleted = order.status === 'completed';
-  const isPending = order.status === 'pending';
-
-  return (
-    <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-      <View style={styles.card}>
-        <Text style={styles.id}>{t('order.title', { id: order.id })}</Text>
-        <View style={[styles.statusBadge, isCompleted ? styles.completed : styles.pending]}>
-          <Text style={styles.statusText}>{getStatusText(order.status)}</Text>
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>{t('order.amount')}</Text>
-        <Text style={styles.value}>{order.amount} {order.currency}</Text>
-
-        {order.moneroAmount && (
-          <>
-            <Text style={styles.label}>{t('order.amountXMR')}</Text>
-            <Text style={styles.value}>{order.moneroAmount.toFixed(8)} XMR</Text>
-          </>
-        )}
-
-        {order.moneroAddress && (
-          <>
-            <Text style={styles.label}>{t('order.moneroAddress')}</Text>
-            <TouchableOpacity onPress={() => copyToClipboard(order.moneroAddress)}>
-              <Text style={styles.address} numberOfLines={3}>
-                {order.moneroAddress}
-              </Text>
-              <Text style={styles.copyText}>{t('order.copyAddress')}</Text>
-            </TouchableOpacity>
-          </>
-        )}
-
-        {order.confirmations > 0 && (
-          <>
-            <Text style={styles.label}>{t('order.confirmations')}</Text>
-            <Text style={styles.value}>{order.confirmations}</Text>
-          </>
-        )}
-
-        {order.amountReceived > 0 && (
-          <>
-            <Text style={styles.label}>{t('order.received')}</Text>
-            <Text style={styles.value}>{order.amountReceived.toFixed(8)} XMR</Text>
-          </>
-        )}
-      </View>
-
-      {isPending && (
-        <View style={styles.card}>
-          <Text style={styles.warning}>{t('order.waitingPayment')}</Text>
-          <Text style={styles.hint}>
-            {t('order.paymentHint', { amount: order.moneroAmount?.toFixed(8) })}
-          </Text>
-          <TouchableOpacity style={styles.refreshButton} onPress={onRefresh}>
-            <Text style={styles.refreshText}>{t('order.refresh')}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {isCompleted && (
-        <View style={[styles.card, styles.successCard]}>
-          <Text style={styles.successText}>{t('order.paymentConfirmed')}</Text>
-        </View>
-      )}
-
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>{t('order.back')}</Text>
-      </TouchableOpacity>
-    </ScrollView>
-  );
+  return <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} />}>
+    <TouchableOpacity onPress={() => navigation.goBack()}><Text style={styles.back}>‹ Indietro</Text></TouchableOpacity>
+    <Text style={styles.title}>Ordine #{order.id || order._id}</Text>
+    <View style={styles.card}><Text style={styles.label}>Stato</Text><Text style={[styles.status, order.status === 'completed' ? styles.completed : styles.pending]}>{String(order.status || 'pending').toUpperCase()}</Text><Text style={styles.label}>Importo</Text><Text style={styles.value}>{order.amount} {order.currency}</Text>{order.moneroAmount != null && <><Text style={styles.label}>Da pagare in XMR</Text><Text style={styles.value}>{xmr(order.moneroAmount)} XMR</Text></>}</View>
+    {order.moneroAddress && <View style={styles.card}><Text style={styles.label}>Indirizzo di pagamento</Text><View style={styles.qr}><QRCode value={`monero:${order.moneroAddress}${order.moneroAmount ? `?tx_amount=${xmr(order.moneroAmount)}` : ''}`} size={180} /></View><TouchableOpacity onPress={() => copy(order.moneroAddress)}><Text selectable style={styles.address}>{order.moneroAddress}</Text><Text style={styles.copy}>Tocca per copiare</Text></TouchableOpacity>{isPending && <Text style={styles.hint}>Il monitor Gateway aggiorna lo stato dopo le conferme Monero.</Text>}</View>}
+    <View style={styles.card}><Text style={styles.label}>Conferme</Text><Text style={styles.value}>{order.confirmations || 0}</Text>{order.amountReceived != null && <><Text style={styles.label}>Ricevuto</Text><Text style={styles.value}>{xmr(order.amountReceived)} XMR</Text></>}</View>
+    {order.status === 'completed' && <View style={styles.success}><Text style={styles.successText}>Pagamento confermato</Text></View>}
+  </ScrollView>;
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5', padding: 16 },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  card: { backgroundColor: '#fff', padding: 16, borderRadius: 8, marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 },
-  id: { fontSize: 18, fontWeight: 'bold' },
-  statusBadge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 16, alignSelf: 'flex-start', marginTop: 8 },
-  pending: { backgroundColor: '#ff9800' },
-  completed: { backgroundColor: '#4CAF50' },
-  statusText: { color: '#fff', fontWeight: 'bold', fontSize: 12 },
-  label: { fontSize: 14, fontWeight: 'bold', marginTop: 12, color: '#666' },
-  value: { fontSize: 16, marginTop: 4 },
-  address: { fontSize: 14, color: '#2196F3', marginTop: 4 },
-  copyText: { fontSize: 12, color: '#999', marginTop: 4 },
-  warning: { fontSize: 16, fontWeight: 'bold', color: '#ff9800' },
-  hint: { fontSize: 14, color: '#666', marginTop: 8 },
-  refreshButton: { backgroundColor: '#2196F3', padding: 12, borderRadius: 8, alignItems: 'center', marginTop: 12 },
-  refreshText: { color: '#fff', fontWeight: 'bold' },
-  successCard: { backgroundColor: '#e8f5e9' },
-  successText: { fontSize: 18, fontWeight: 'bold', color: '#4CAF50', textAlign: 'center' },
-  backButton: { padding: 16, borderRadius: 8, alignItems: 'center', marginTop: 8 },
-  backButtonText: { color: '#666', fontSize: 16 },
+  container: { flex: 1, backgroundColor: '#f5f5f5', padding: 16 }, center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 }, back: { color: '#1976D2', fontSize: 16, marginBottom: 18 }, title: { fontSize: 24, fontWeight: '700', marginBottom: 16 }, card: { backgroundColor: 'white', borderRadius: 12, padding: 16, marginBottom: 12 }, label: { color: '#666', fontWeight: '600', marginTop: 8 }, value: { fontSize: 18, marginTop: 4 }, status: { alignSelf: 'flex-start', color: 'white', borderRadius: 10, overflow: 'hidden', paddingHorizontal: 10, paddingVertical: 5, marginTop: 6, fontWeight: '700', fontSize: 12 }, pending: { backgroundColor: '#f39c12' }, completed: { backgroundColor: '#2e7d32' }, qr: { alignItems: 'center', margin: 14 }, address: { textAlign: 'center', color: '#1e5aa8', fontSize: 12 }, copy: { textAlign: 'center', color: '#777', marginTop: 6 }, hint: { color: '#777', marginTop: 14, lineHeight: 20 }, success: { backgroundColor: '#e8f5e9', borderRadius: 10, padding: 16 }, successText: { color: '#2e7d32', fontWeight: '700', textAlign: 'center' }, error: { color: '#c62828', marginBottom: 14 },
 });
