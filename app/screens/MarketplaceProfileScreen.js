@@ -13,8 +13,8 @@ import { AuthContext } from '../context/AuthContext';
 import { fetchListings } from '../services/listingsService';
 
 const {
+  getListingsForUser,
   getUserId,
-  isListingOwnedBy,
 } = require('../services/listingUtils');
 
 const getErrorMessage = (error) =>
@@ -40,9 +40,7 @@ export default function MarketplaceProfileScreen({ navigation }) {
           throw new Error('The signed-in user has no marketplace user ID.');
         }
         const allListings = await fetchListings();
-        setListings(
-          allListings.filter((listing) => isListingOwnedBy(listing, user))
-        );
+        setListings(getListingsForUser(allListings, user));
       } catch (requestError) {
         setError(getErrorMessage(requestError));
       } finally {

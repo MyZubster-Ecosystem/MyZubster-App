@@ -132,9 +132,15 @@ const isListingOwnedBy = (listing, user) => {
   return Boolean(currentUserId && listingUserId === currentUserId);
 };
 
+const getListingsForUser = (listings, user) =>
+  normalizeListings(listings).filter((listing) =>
+    isListingOwnedBy(listing, user)
+  );
+
 module.exports = {
   buildListingPayload,
   filterListings,
+  getListingsForUser,
   getUserId,
   isListingOwnedBy,
   normalizeListing,

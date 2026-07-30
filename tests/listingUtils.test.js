@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const {
   buildListingPayload,
   filterListings,
+  getListingsForUser,
   getUserId,
   isListingOwnedBy,
   normalizeListings,
@@ -116,4 +117,12 @@ test('matches profile listings across numeric and string user IDs', () => {
   assert.equal(getUserId({ _id: 7 }), '7');
   assert.equal(isListingOwnedBy(sampleListings[0], { id: '7' }), true);
   assert.equal(isListingOwnedBy(sampleListings[1], { id: 7 }), false);
+});
+
+test('returns an empty profile when the signed-in user has no listings', () => {
+  assert.deepEqual(getListingsForUser(sampleListings, { id: 999 }), []);
+  assert.deepEqual(
+    getListingsForUser(sampleListings, { id: 7 }).map(({ id }) => id),
+    ['1']
+  );
 });
