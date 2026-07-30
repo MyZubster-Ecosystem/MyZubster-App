@@ -22,6 +22,7 @@
 
 ## 🎯 What Is MyZubster App?
 
+<<<<<<< HEAD
 MyZubster is not just a marketplace. It’s a **trust‑based service exchange platform** where you can:
 
 - Find professionals and services near you using **geolocation**
@@ -133,6 +134,15 @@ text
 │ │ Geolocation │ │ Messaging │ │ Escrow │ │
 │ │ (Map + GPS) │ │ (E2E Enc.) │ │ (Smart Contract)│ │
 │ └──────────────┘ └──────────────┘ └──────────────────┘ │
+=======
+The app connects to the MyZubster ecosystem via REST APIs:
+┌─────────────────┐ ┌─────────────────────┐
+│ │ │ │
+│ MyZubster App │──────▶│ MyZubster Gateway │
+│ (React Native) │ │ (Monero payments) │
+│ │ │ │
+└─────────────────┘ └─────────────────────┘
+>>>>>>> 7a7fa0e (merge: risolto conflitto su README.md)
 │ │
 │ ┌──────────────┐ ┌──────────────┐ ┌──────────────────┐ │
 │ │ Monero │ │ JWT Auth │ │ Order Management│ │
