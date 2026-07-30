@@ -1,22 +1,30 @@
 import axios from 'axios';
-import { API_URL } from '@env';
+import Constants from 'expo-constants';
+
+const configuredUrl = Constants.expoConfig?.extra?.apiUrl ||
+  (typeof process !== 'undefined' ? process.env?.EXPO_PUBLIC_API_URL : undefined);
+
+export const API_URL = (configuredUrl || 'http://192.168.1.10:3000/api').replace(/\/$/, '');
 
 const api = axios.create({
-  baseURL: API_URL || 'http://192.168.1.10:3000/api',
+  baseURL: API_URL,
   timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
+
+export function setAuthToken(token) {
+  if (token) api.defaults.headers.common.Authorization = `Bearer ${token}`;
+  else delete api.defaults.headers.common.Authorization;
+}
 
 api.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      console.log('Sessione scaduta');
+      delete api.defaults.headers.common.Authorization;
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

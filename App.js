@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider, AuthContext } from './app/context/AuthContext';
@@ -8,11 +9,24 @@ import RegisterScreen from './app/screens/RegisterScreen';
 import DashboardScreen from './app/screens/DashboardScreen';
 import CreateOrderScreen from './app/screens/CreateOrderScreen';
 import OrderScreen from './app/screens/OrderScreen';
+import WalletScreen from './app/screens/WalletScreen';
+import PrivacyScreen from './app/screens/PrivacyScreen';
+import AnonymousLoginScreen from './app/screens/AnonymousLoginScreen';
+import ProfileScreen from './app/screens/ProfileScreen';
+import ReviewsScreen from './app/screens/ReviewsScreen';
+import MapScreen from './app/screens/MapScreen';
+import NotificationsScreen from './app/screens/NotificationsScreen';
+import NotificationManager from './app/components/NotificationManager';
+import { navigationRef } from './app/navigation/navigationRef';
 
 const Stack = createNativeStackNavigator();
 
 function AppNavigator() {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator size="large" color="#4CAF50" /></View>;
+  }
   
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -21,11 +35,18 @@ function AppNavigator() {
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="CreateOrder" component={CreateOrderScreen} />
           <Stack.Screen name="Order" component={OrderScreen} />
+          <Stack.Screen name="Wallet" component={WalletScreen} />
+          <Stack.Screen name="Privacy" component={PrivacyScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Reviews" component={ReviewsScreen} />
+          <Stack.Screen name="Map" component={MapScreen} />
+          <Stack.Screen name="Notifications" component={NotificationsScreen} />
         </>
       ) : (
         <>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="AnonymousLogin" component={AnonymousLoginScreen} />
         </>
       )}
     </Stack.Navigator>
@@ -36,9 +57,10 @@ export default function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <AppNavigator />
         </NavigationContainer>
+        <NotificationManager />
       </AuthProvider>
     </LanguageProvider>
   );
