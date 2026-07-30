@@ -1,6 +1,6 @@
 # MyZubster App
 
-React Native/Expo 51 Android client for the MyZubster Gateway. The app provides unified and anonymous authentication, profiles, marketplace orders, Monero payment QR codes, reviews, geolocated skills, push notifications, a Gateway-backed wallet screen, and Orbot privacy controls.
+React Native/Expo 51 Android client for the MyZubster Gateway. The app provides authentication, order tracking, Monero payment QR codes, a Gateway-backed wallet screen, and Orbot privacy controls.
 
 ## Development
 
@@ -24,29 +24,9 @@ The order API creates a payment subaddress and returns `moneroAddress`, `moneroA
 
 Wallet endpoints must be implemented and authenticated by the Gateway before the mobile wallet can send funds. The app never stores spend keys in AsyncStorage.
 
-The additional mobile flows use these Gateway contracts:
-
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| POST | `/api/auth/monero/challenge` | Return a one-time message for a wallet address |
-| POST | `/api/auth/monero/verify` | Verify `{ walletAddress, nickname, message, signature }` and return a JWT/user |
-| GET | `/api/auth/me` or `/api/users/me` | Restore the authenticated profile |
-| PUT | `/api/users/me` or `/api/users/:id` | Update name, username, email, and public wallet address |
-| GET | `/api/reviews/target/:id` | Review history for a user/skill |
-| GET | `/api/reviews/stats/:id` | Average, count, and rating distribution |
-| POST | `/api/reviews` | Create a review after a completed order |
-| GET | `/api/skills` | Skills/offers; accepts category, latitude, longitude, and radiusKm filters |
-| GET | `/api/notifications` | Notification inbox |
-| PUT | `/api/notifications/:id/read` | Mark one notification read |
-| PUT | `/api/notifications/read-all` | Mark all notifications read |
-| POST | `/api/notifications/devices` | Register an Expo/FCM device token |
-| PUT | `/api/notifications/preferences` | Persist notification preferences |
-
-Anonymous authentication intentionally requires the wallet to sign the server-issued challenge. The client never receives or stores a private key and never fabricates a signature.
-
 ## Native build requirements
 
-QR scanning uses `expo-camera`, maps use `react-native-maps` plus `expo-location`, notifications use `expo-notifications`, and secure token storage uses `expo-secure-store`; use a development build after installing native dependencies:
+QR scanning uses `expo-camera` and QR rendering uses `react-native-svg`; use a development build after installing native dependencies:
 
 ```bash
 npx expo prebuild --clean

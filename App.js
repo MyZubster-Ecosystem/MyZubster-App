@@ -25,12 +25,22 @@ function AppNavigator() {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator size="large" color="#4CAF50" /></View>;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#6200EE" />
+      </View>
+    );
   }
-  
+
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {user ? (
+    <Stack.Navigator>
+      {!user ? (
+        <>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="AnonymousLogin" component={AnonymousLoginScreen} />
+        </>
+      ) : (
         <>
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="CreateOrder" component={CreateOrderScreen} />
@@ -42,12 +52,6 @@ function AppNavigator() {
           <Stack.Screen name="Map" component={MapScreen} />
           <Stack.Screen name="Notifications" component={NotificationsScreen} />
         </>
-      ) : (
-        <>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="AnonymousLogin" component={AnonymousLoginScreen} />
-        </>
       )}
     </Stack.Navigator>
   );
@@ -58,9 +62,9 @@ export default function App() {
     <LanguageProvider>
       <AuthProvider>
         <NavigationContainer ref={navigationRef}>
+          <NotificationManager />
           <AppNavigator />
         </NavigationContainer>
-        <NotificationManager />
       </AuthProvider>
     </LanguageProvider>
   );
