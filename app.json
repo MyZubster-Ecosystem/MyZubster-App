@@ -1,24 +1,45 @@
 {
   "expo": {
-    "name": "myzubster-app",
+    "name": "MyZubster App",
     "slug": "myzubster-app",
     "version": "1.0.0",
-    "sdkVersion": "51.0.0",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "android": {
-      "package": "com.anonymous.myzubsterapp",
-      "permissions": ["CAMERA"]
+    "scheme": "myzubster",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
-    "plugins": [
-      ["expo-camera", { "cameraPermission": "Consenti a MyZubster di scansionare indirizzi Monero.", "recordAudioAndroid": false }]
+    "assetBundlePatterns": [
+      "**/*"
     ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.myzubster.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.myzubster.app",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
     "extra": {
-      "apiUrl": "http://192.168.1.10:3000/api",
       "eas": {
-        "projectId": "066d68ca-b5ec-4ec3-94cf-e5cf8890718d"
+        "projectId": "your-project-id-here"
       }
     }
   }
