@@ -2,6 +2,7 @@
   "expo": {
     "name": "myzubster-app",
     "slug": "myzubster-app",
+    "scheme": "myzubster",
     "version": "1.0.0",
     "sdkVersion": "51.0.0",
     "platforms": [
@@ -10,10 +11,24 @@
     ],
     "android": {
       "package": "com.anonymous.myzubsterapp",
-      "permissions": ["CAMERA"]
+      "permissions": [
+        "CAMERA",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "POST_NOTIFICATIONS"
+      ]
     },
     "plugins": [
-      ["expo-camera", { "cameraPermission": "Consenti a MyZubster di scansionare indirizzi Monero.", "recordAudioAndroid": false }]
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Consenti a MyZubster di scansionare indirizzi Monero.",
+          "recordAudioAndroid": false
+        }
+      ],
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-location"
     ],
     "extra": {
       "apiUrl": "http://192.168.1.10:3000/api",

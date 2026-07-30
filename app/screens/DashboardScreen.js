@@ -45,6 +45,11 @@ export default function DashboardScreen({ navigation }) {
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Privacy')}><Text style={styles.actionEmoji}>🧅</Text><Text>Privacy</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('CreateOrder')}><Text style={styles.actionEmoji}>📦</Text><Text>Nuovo ordine</Text></TouchableOpacity>
     </View>
+    <View style={styles.quickActions}>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Profile')}><Text style={styles.actionEmoji}>👤</Text><Text>Profilo</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Map')}><Text style={styles.actionEmoji}>🗺️</Text><Text>Mappa</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Notifications')}><Text style={styles.actionEmoji}>🔔</Text><Text>Notifiche</Text></TouchableOpacity>
+    </View>
     <TouchableOpacity style={styles.torButton} onPress={handleOrbot}><Text style={styles.torText}>{orbot?.installed ? 'Avvia Orbot' : 'Configura privacy'}</Text></TouchableOpacity>
     <View style={styles.titleRow}><Text style={styles.sectionTitle}>{t('dashboard.title')}</Text><TouchableOpacity onPress={() => load(true)}><Text style={styles.refresh}>Aggiorna</Text></TouchableOpacity></View>
     {orders.length === 0 ? <View style={styles.empty}><Text style={styles.emptyText}>{t('dashboard.noOrders')}</Text><Text style={styles.subtle}>{t('dashboard.noOrdersSub')}</Text></View> : <FlatList

@@ -11,6 +11,13 @@ import CreateOrderScreen from './app/screens/CreateOrderScreen';
 import OrderScreen from './app/screens/OrderScreen';
 import WalletScreen from './app/screens/WalletScreen';
 import PrivacyScreen from './app/screens/PrivacyScreen';
+import AnonymousLoginScreen from './app/screens/AnonymousLoginScreen';
+import ProfileScreen from './app/screens/ProfileScreen';
+import ReviewsScreen from './app/screens/ReviewsScreen';
+import MapScreen from './app/screens/MapScreen';
+import NotificationsScreen from './app/screens/NotificationsScreen';
+import NotificationManager from './app/components/NotificationManager';
+import { navigationRef } from './app/navigation/navigationRef';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,11 +37,16 @@ function AppNavigator() {
           <Stack.Screen name="Order" component={OrderScreen} />
           <Stack.Screen name="Wallet" component={WalletScreen} />
           <Stack.Screen name="Privacy" component={PrivacyScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Reviews" component={ReviewsScreen} />
+          <Stack.Screen name="Map" component={MapScreen} />
+          <Stack.Screen name="Notifications" component={NotificationsScreen} />
         </>
       ) : (
         <>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="AnonymousLogin" component={AnonymousLoginScreen} />
         </>
       )}
     </Stack.Navigator>
@@ -45,9 +57,10 @@ export default function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <AppNavigator />
         </NavigationContainer>
+        <NotificationManager />
       </AuthProvider>
     </LanguageProvider>
   );

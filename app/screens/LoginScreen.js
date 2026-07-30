@@ -52,6 +52,9 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.registerText}>Non hai un account? Registrati</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('AnonymousLogin')}>
+        <Text style={styles.anonymousText}>🕶️ Accedi con wallet Monero (anonimo)</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -64,4 +67,5 @@ const styles = StyleSheet.create({
   loginButton: { backgroundColor: '#4CAF50', padding: 16, borderRadius: 8, alignItems: 'center' },
   loginButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   registerText: { textAlign: 'center', marginTop: 16, color: '#2196F3' },
+  anonymousText: { textAlign: 'center', marginTop: 14, color: '#7B2FBE', fontWeight: '600' },
 });

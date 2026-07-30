@@ -4,10 +4,10 @@ import { AuthContext } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { createOrder } from '../services/orderService';
 
-export default function CreateOrderScreen({ navigation }) {
+export default function CreateOrderScreen({ navigation, route }) {
   const { user } = useContext(AuthContext);
   const { t } = useLanguage();
-  const [skillId, setSkillId] = useState('');
+  const [skillId, setSkillId] = useState(String(route.params?.skillId || route.params?.skill?.id || ''));
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('USD');
   const [loading, setLoading] = useState(false);
