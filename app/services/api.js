@@ -1,8 +1,10 @@
 import axios from 'axios';
-import { API_URL } from '@env';
+
+const apiUrl =
+  process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.10:3000/api';
 
 const api = axios.create({
-  baseURL: API_URL || 'http://192.168.1.10:3000/api',
+  baseURL: apiUrl.replace(/\/+$/, ''),
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
