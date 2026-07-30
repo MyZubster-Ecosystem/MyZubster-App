@@ -146,6 +146,21 @@ export default function DashboardScreen({ navigation }) {
         </View>
       </View>
 
+      <View style={styles.marketplaceNav}>
+        <TouchableOpacity
+          style={styles.marketplaceButton}
+          onPress={() => navigation.navigate('Marketplace')}
+        >
+          <Text style={styles.marketplaceButtonText}>🛍️ Marketplace</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={() => navigation.navigate('MarketplaceProfile')}
+        >
+          <Text style={styles.profileButtonText}>My skills</Text>
+        </TouchableOpacity>
+      </View>
+
       <Text style={styles.sectionTitle}>{t('dashboard.title')}</Text>
 
       {orders.length === 0 ? (
@@ -198,6 +213,28 @@ const styles = StyleSheet.create({
   orbotConnected: { backgroundColor: '#4CAF50' },
   orbotDisconnected: { backgroundColor: '#7B2FBE' },
   orbotButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
+  marketplaceNav: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  marketplaceButton: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#2e7d32',
+    borderRadius: 8,
+    paddingVertical: 11,
+  },
+  marketplaceButtonText: { color: '#fff', fontWeight: 'bold' },
+  profileButton: {
+    alignItems: 'center',
+    borderColor: '#2e7d32',
+    borderRadius: 8,
+    borderWidth: 1,
+    justifyContent: 'center',
+    marginLeft: 8,
+    paddingHorizontal: 16,
+  },
+  profileButtonText: { color: '#2e7d32', fontWeight: 'bold' },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
   list: { paddingBottom: 20 },
   orderCard: {

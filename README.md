@@ -167,7 +167,8 @@ cp .env.example .env
 Configure .env
 env
 
-API_URL=http://192.168.1.10:3000/api
+EXPO_PUBLIC_API_URL=http://192.168.1.10:3000/api
+EXPO_PUBLIC_MARKETPLACE_API_URL=http://192.168.1.10:4000/api
 NODE_ENV=development
 
 Start development server
