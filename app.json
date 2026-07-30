@@ -9,12 +9,27 @@
       "android"
     ],
     "android": {
-      "package": "com.anonymous.myzubsterapp"
+      "package": "com.anonymous.myzubsterapp",
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.myzubsterapp"
     },
     "extra": {
       "eas": {
         "projectId": "066d68ca-b5ec-4ec3-94cf-e5cf8890718d"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#4CAF50",
+          "sounds": ["./assets/notification.wav"]
+        }
+      ]
+    ]
   }
 }
