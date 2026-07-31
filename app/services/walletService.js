@@ -27,6 +27,43 @@ export async function sendPayment({ address, amount, paymentId }) {
   return data;
 }
 
+export async function listAddresses() {
+  try {
+    const { data } = await api.get('/wallet/addresses');
+    const raw = Array.isArray(data) ? data : data.addresses || [];
+    return raw.map(item => ({
+      address: item.address || item.moneroAddress || '',
+      label: item.label || '',
+      primary: item.primary || item.main || false,
+    }));
+  } catch (error) {
+    if (error?.response?.status === 404) {
+      return [];
+    }
+    throw error;
+  }
+}
+
+export async function getNetworkStatus() {
+  try {
+    const { data } = await api.get('/wallet/network');
+    return { online: true, network: data.network || 'mainnet', height: data.height || data.blockchainHeight || data.syncedHeight || null, source: 'wallet/network' };
+  } catch (error) {
+    try {
+      const { data } = await api.get('/wallet/status');
+      return { online: true, network: data.network || 'mainnet', height: data.height || data.blockchainHeight || data.syncedHeight || null, source: 'wallet/status' };
+    } catch (statusError) {
+      try {
+        const wallet = await getWallet();
+        const height = wallet.height || wallet.blockchainHeight || wallet.syncedHeight || wallet.networkHeight || null;
+        return { online: Boolean(wallet?.connected || wallet?.online || wallet?.daemonConnected), network: wallet?.network || 'unknown', height, source: 'getWallet' };
+      } catch {
+        return { online: false, network: 'unknown', height: null, source: 'fallback' };
+      }
+    }
+  }
+}
+
 export function isWalletEndpointError(error) {
   return [404, 501].includes(error?.response?.status);
 }

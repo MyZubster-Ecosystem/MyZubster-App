@@ -10,6 +10,7 @@ import DashboardScreen from './app/screens/DashboardScreen';
 import CreateOrderScreen from './app/screens/CreateOrderScreen';
 import OrderScreen from './app/screens/OrderScreen';
 import WalletScreen from './app/screens/WalletScreen';
+import SubaddressScreen from './app/screens/SubaddressScreen';
 import PrivacyScreen from './app/screens/PrivacyScreen';
 import AnonymousLoginScreen from './app/screens/AnonymousLoginScreen';
 import ProfileScreen from './app/screens/ProfileScreen';
@@ -46,6 +47,7 @@ function AppNavigator() {
           <Stack.Screen name="CreateOrder" component={CreateOrderScreen} />
           <Stack.Screen name="Order" component={OrderScreen} />
           <Stack.Screen name="Wallet" component={WalletScreen} />
+          <Stack.Screen name="Subaddresses" component={SubaddressScreen} />
           <Stack.Screen name="Privacy" component={PrivacyScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Reviews" component={ReviewsScreen} />

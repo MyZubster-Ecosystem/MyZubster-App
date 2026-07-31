@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -15,7 +15,16 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import QRCode from 'react-native-qrcode-svg';
-import { createReceiveAddress, getWallet, getWalletTransactions, isWalletEndpointError, sendPayment } from '../services/walletService';
+import {
+  createReceiveAddress,
+  getWallet,
+  getWalletTransactions,
+  getNetworkStatus,
+  isWalletEndpointError,
+  sendPayment,
+} from '../services/walletService';
+import { isPinSet, setPin, verifyPin, getRemainingAttempts, getLockUntil } from '../services/walletPinService';
+import PinPrompt from '../components/PinPrompt';
 
 const formatXmr = value => Number(value || 0).toFixed(8);
 const parseAddress = value => String(value || '').replace(/^monero:/i, '').split(/[?;]/)[0];
@@ -33,12 +42,36 @@ export default function WalletScreen({ navigation }) {
   const [sendBusy, setSendBusy] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
 
+  const [network, setNetwork] = useState({ online: false, network: 'unknown', height: null, source: 'fallback' });
+  const [pinReady, setPinReady] = useState(false);
+  const [pinMode, setPinMode] = useState('enter');
+  const [pinError, setPinError] = useState('');
+  const [pinLock, setPinLock] = useState(null);
+  const [remainingAttempts, setRemainingAttempts] = useState(null);
+  const [selectedTx, setSelectedTx] = useState(null);
+
+  const checkPinStatus = useCallback(async () => {
+    const set = await isPinSet();
+    setPinReady(false);
+    setPinMode(set ? 'enter' : 'create');
+    setPinError('');
+    if (set) {
+      const lock = await getLockUntil();
+      setPinLock(lock);
+      const remaining = await getRemainingAttempts();
+      setRemainingAttempts(remaining);
+    }
+  }, []);
+
+  useEffect(() => { checkPinStatus(); }, [checkPinStatus]);
+
   const load = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true); else setLoading(true);
     try {
-      const [summary, history] = await Promise.all([getWallet(), getWalletTransactions()]);
+      const [summary, history, net] = await Promise.all([getWallet(), getWalletTransactions(), getNetworkStatus()]);
       setWallet(summary);
       setTransactions(history);
+      setNetwork(net);
       if (!receiveAddress && summary?.address) setReceiveAddress(summary.address);
     } catch (error) {
       if (isWalletEndpointError(error)) {
@@ -52,7 +85,41 @@ export default function WalletScreen({ navigation }) {
     }
   }, [receiveAddress]);
 
-  useEffect(() => { load(); }, [load]);
+  const unlock = async pin => {
+    const result = await verifyPin(pin);
+    if (result.ok) {
+      setPinReady(true);
+      setPinError('');
+      setPinLock(null);
+      setRemainingAttempts(null);
+      await load();
+      return;
+    }
+    if (result.locked) {
+      setPinLock(Date.now() + result.remainingMs);
+      setPinError(`PIN bloccato. Riprova tra ${Math.ceil((result.remainingMs || 0) / 1000)}s.`);
+      setRemainingAttempts(0);
+      return;
+    }
+    const remaining = result.remaining;
+    setRemainingAttempts(remaining);
+    setPinError(`PIN errato. Tentativi rimasti: ${remaining}.`);
+  };
+
+  const createPin = async pin => {
+    await setPin(pin);
+    setPinReady(true);
+    setPinMode('enter');
+    setPinError('');
+    setPinLock(null);
+    setRemainingAttempts(null);
+    await load();
+  };
+
+  const handlePinSubmit = pin => {
+    if (pinMode === 'create') return createPin(pin);
+    return unlock(pin);
+  };
 
   const requestReceiveAddress = async () => {
     try {
@@ -100,6 +167,29 @@ export default function WalletScreen({ navigation }) {
 
   const balance = wallet?.unlockedBalance ?? wallet?.unlocked_balance ?? wallet?.balance ?? 0;
   const address = receiveAddress || wallet?.address || wallet?.moneroAddress || '';
+  const networkLabel = useMemo(() => {
+    if (network.online) return `Nodo online · ${network.height ? `blocco ${network.height}` : network.network}`;
+    return 'Nodo offline / sconosciuto';
+  }, [network]);
+
+  if (!pinReady) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.center}>
+          <Text style={styles.title}>Wallet Monero</Text>
+          <Text style={styles.muted}>Il wallet è protetto da PIN.</Text>
+          <PinPrompt
+            visible
+            mode={pinMode}
+            onSubmit={handlePinSubmit}
+            onDismiss={() => navigation.goBack()}
+          />
+          {!!pinError && <Text style={styles.error}>{pinError}</Text>}
+          {!!pinLock && Date.now() < pinLock && <Text style={styles.error}>{`Bloccato per ${Math.ceil((pinLock - Date.now()) / 1000)}s`}</Text>}
+        </View>
+      </View>
+    );
+  }
 
   if (loading) return <View style={styles.center}><ActivityIndicator size="large" color="#4CAF50" /><Text>Caricamento wallet…</Text></View>;
 
@@ -109,12 +199,16 @@ export default function WalletScreen({ navigation }) {
         <TouchableOpacity onPress={() => navigation.goBack()}><Text style={styles.back}>‹ Indietro</Text></TouchableOpacity>
         <Text style={styles.title}>Wallet Monero</Text>
       </View>
+
+      <View style={styles.networkBadge}><Text style={styles.networkText}>{networkLabel}</Text></View>
+
       <View style={styles.balanceCard}>
         <Text style={styles.caption}>Saldo disponibile</Text>
         <Text style={styles.balance}>{formatXmr(balance)} XMR</Text>
         <View style={styles.actions}>
           <TouchableOpacity style={styles.primaryButton} onPress={() => setShowSend(true)}><Text style={styles.buttonText}>Invia</Text></TouchableOpacity>
           <TouchableOpacity style={styles.secondaryButton} onPress={requestReceiveAddress}><Text style={styles.secondaryText}>Nuovo indirizzo</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Subaddresses')}><Text style={styles.secondaryText}>Gestisci indirizzi</Text></TouchableOpacity>
         </View>
       </View>
 
@@ -136,14 +230,16 @@ export default function WalletScreen({ navigation }) {
           scrollEnabled={false}
           data={transactions}
           keyExtractor={(item, index) => String(item.txid || item.txHash || item.id || index)}
-          renderItem={({ item }) => <View style={styles.txRow}>
-            <View><Text style={styles.txType}>{item.type || (item.incoming ? 'Ricevuta' : 'Inviata')}</Text><Text style={styles.muted}>{item.createdAt ? new Date(item.createdAt).toLocaleString() : item.txid || item.txHash || '—'}</Text></View>
-            <Text style={item.type === 'outgoing' ? styles.outgoing : styles.incoming}>{item.type === 'outgoing' ? '-' : '+'}{formatXmr(item.amount)} XMR</Text>
-          </View>}
-        />} 
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.txRow} onPress={() => setSelectedTx(item)}>
+              <View><Text style={styles.txType}>{item.type || (item.incoming ? 'Ricevuta' : 'Inviata')}</Text><Text style={styles.muted}>{item.createdAt ? new Date(item.createdAt).toLocaleString() : item.txid || item.txHash || '—'}</Text></View>
+              <Text style={item.type === 'outgoing' ? styles.outgoing : styles.incoming}>{item.type === 'outgoing' ? '-' : '+'}{formatXmr(item.amount)} XMR</Text>
+            </TouchableOpacity>
+          )}
+        />}
       </View>
 
-      <Modal visible={showSend} animationType="slide" onRequestClose={() => setShowSend(false)}>
+      <Modal visible={!!showSend} animationType="slide" onRequestClose={() => setShowSend(false)}>
         <ScrollView contentContainerStyle={styles.modal}>
           <Text style={styles.title}>Invia XMR</Text>
           <TextInput value={sendAddress} onChangeText={setSendAddress} placeholder="Indirizzo Monero" autoCapitalize="none" style={styles.input} />
@@ -156,6 +252,23 @@ export default function WalletScreen({ navigation }) {
       <Modal visible={showScanner} animationType="slide" onRequestClose={() => setShowScanner(false)}>
         <View style={styles.scanner}><CameraView style={StyleSheet.absoluteFill} barcodeScannerSettings={{ barcodeTypes: ['qr'] }} onBarcodeScanned={({ data }) => { setSendAddress(parseAddress(data)); setShowScanner(false); setShowSend(true); }} /><TouchableOpacity style={styles.closeScanner} onPress={() => setShowScanner(false)}><Text style={styles.buttonText}>Chiudi</Text></TouchableOpacity></View>
       </Modal>
+
+      <Modal visible={!!selectedTx} animationType="fade" transparent onRequestClose={() => setSelectedTx(null)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.title}>Dettagli transazione</Text>
+            {selectedTx && <>
+              <Text style={styles.detailRow}>TXID: <Text selectable style={styles.detailValue}>{selectedTx.txid || selectedTx.txHash || '—'}</Text></Text>
+              <Text style={styles.detailRow}>Importo: <Text style={styles.detailValue}>{selectedTx.type === 'outgoing' ? '-' : '+'}{formatXmr(selectedTx.amount)} XMR</Text></Text>
+              <Text style={styles.detailRow}>Tipo: <Text style={styles.detailValue}>{selectedTx.type || (selectedTx.incoming ? 'Ricevuta' : 'Inviata')}</Text></Text>
+              <Text style={styles.detailRow}>Data: <Text style={styles.detailValue}>{selectedTx.createdAt ? new Date(selectedTx.createdAt).toLocaleString() : '—'}</Text></Text>
+              <Text style={styles.detailRow}>Conferme: <Text style={styles.detailValue}>{selectedTx.confirmations ?? selectedTx.numConfirmations ?? '—'}</Text></Text>
+              <Text style={styles.detailRow}>Note: <Text style={styles.detailValue}>{selectedTx.note || selectedTx.notes || selectedTx.memo || '—'}</Text></Text>
+              <TouchableOpacity style={styles.primaryButton} onPress={() => setSelectedTx(null)}><Text style={styles.buttonText}>Chiudi</Text></TouchableOpacity>
+            </>}
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -167,19 +280,21 @@ const styles = StyleSheet.create({
   topRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
   back: { color: '#1976D2', fontSize: 16, marginRight: 20 },
   title: { fontSize: 24, fontWeight: '700' },
+  networkBadge: { backgroundColor: '#e8f5e9', padding: 10, borderRadius: 10, marginBottom: 12, alignItems: 'center' },
+  networkText: { color: '#2e7d32', fontWeight: '700' },
   balanceCard: { backgroundColor: '#17351f', padding: 20, borderRadius: 14, marginBottom: 14 },
   caption: { color: '#b8d9bf' },
   balance: { color: 'white', fontSize: 30, fontWeight: '700', marginVertical: 8 },
-  card: { backgroundColor: 'white', borderRadius: 12, padding: 16, marginBottom: 14 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', marginBottom: 12 },
-  qrWrap: { alignItems: 'center', padding: 10, marginBottom: 8 },
-  address: { color: '#1e5aa8', fontSize: 12, textAlign: 'center' },
-  actions: { flexDirection: 'row', gap: 8, marginTop: 14 },
+  actions: { flexDirection: 'row', gap: 8, marginTop: 14, flexWrap: 'wrap' },
   primaryButton: { flex: 1, backgroundColor: '#4CAF50', padding: 13, borderRadius: 8, alignItems: 'center' },
   secondaryButton: { flex: 1, borderWidth: 1, borderColor: '#4CAF50', padding: 12, borderRadius: 8, alignItems: 'center' },
   buttonText: { color: 'white', fontWeight: '700' },
   secondaryText: { color: '#277d35', fontWeight: '700' },
   muted: { color: '#777' },
+  card: { backgroundColor: 'white', borderRadius: 12, padding: 16, marginBottom: 14 },
+  sectionTitle: { fontSize: 18, fontWeight: '700', marginBottom: 12 },
+  qrWrap: { alignItems: 'center', padding: 10, marginBottom: 8 },
+  address: { color: '#1e5aa8', fontSize: 12, textAlign: 'center' },
   txRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#eee' },
   txType: { fontWeight: '600' },
   incoming: { color: '#2e7d32', fontWeight: '700' },
@@ -188,4 +303,9 @@ const styles = StyleSheet.create({
   cancel: { alignItems: 'center', padding: 16 },
   scanner: { flex: 1, backgroundColor: 'black' },
   closeScanner: { position: 'absolute', bottom: 36, left: 20, right: 20, backgroundColor: '#333', padding: 15, borderRadius: 8, alignItems: 'center' },
+  error: { color: '#c62828', textAlign: 'center', marginBottom: 8 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', alignItems: 'center', padding: 20 },
+  modalCard: { width: '100%', maxWidth: 420, backgroundColor: 'white', borderRadius: 16, padding: 20 },
+  detailRow: { paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#eee' },
+  detailValue: { fontWeight: '600' },
 });
