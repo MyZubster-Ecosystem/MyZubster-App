@@ -31,12 +31,18 @@
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
-        "RECORD_AUDIO"
+        "RECORD_AUDIO",
+        "POST_NOTIFICATIONS"
       ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      "expo-notifications",
+      "expo-location",
+      "expo-secure-store"
+    ],
     "extra": {
       "eas": {
         "projectId": "your-project-id-here"
