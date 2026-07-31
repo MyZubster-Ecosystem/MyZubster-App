@@ -9,6 +9,7 @@ import RegisterScreen from './app/screens/RegisterScreen';
 import DashboardScreen from './app/screens/DashboardScreen';
 import CreateOrderScreen from './app/screens/CreateOrderScreen';
 import OrderScreen from './app/screens/OrderScreen';
+import OrderHistoryScreen from './app/screens/OrderHistoryScreen';
 import WalletScreen from './app/screens/WalletScreen';
 import PrivacyScreen from './app/screens/PrivacyScreen';
 import AnonymousLoginScreen from './app/screens/AnonymousLoginScreen';
@@ -45,6 +46,7 @@ function AppNavigator() {
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="CreateOrder" component={CreateOrderScreen} />
           <Stack.Screen name="Order" component={OrderScreen} />
+          <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
           <Stack.Screen name="Wallet" component={WalletScreen} />
           <Stack.Screen name="Privacy" component={PrivacyScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />

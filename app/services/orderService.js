@@ -32,3 +32,8 @@ export async function getOrderPaymentStatus(orderId) {
     return getOrder(orderId);
   }
 }
+
+export async function cancelOrder(orderId) {
+  const { data } = await api.put(`/orders/${encodeURIComponent(orderId)}/cancel`);
+  return data;
+}

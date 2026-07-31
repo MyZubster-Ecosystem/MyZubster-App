@@ -28,7 +28,8 @@ export default function CreateOrderScreen({ navigation }) {
       });
 
       Alert.alert('✅ ' + t('common.success'), t('createOrder.successMessage'));
-      navigation.navigate('Order', { orderId: order.id || order._id });
+      const expiresAt = order?.expiresAt || new Date(Date.now() + 30 * 60 * 1000).toISOString();
+      navigation.navigate('Order', { orderId: order.id || order._id, expiresAt });
     } catch (error) {
       console.error('Errore creazione ordine:', error);
       Alert.alert('❌ ' + t('createOrder.error'), error.response?.data?.error || t('createOrder.errorMessage'));
