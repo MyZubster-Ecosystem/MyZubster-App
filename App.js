@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -17,9 +17,34 @@ import ReviewsScreen from './app/screens/ReviewsScreen';
 import MapScreen from './app/screens/MapScreen';
 import NotificationsScreen from './app/screens/NotificationsScreen';
 import NotificationManager from './app/components/NotificationManager';
+import SyncStatusIndicator from './app/components/SyncStatusIndicator';
 import { navigationRef } from './app/navigation/navigationRef';
+import { getNetworkStatus, addNetworkStatusListener, startNetworkPolling } from './app/services/networkStatusService';
+import { replayQueue } from './app/services/offlineQueue';
+import { replayItem } from './app/services/syncReplay';
 
 const Stack = createNativeStackNavigator();
+
+function SyncController({ children }) {
+  const [status, setStatus] = useState(() => getNetworkStatus());
+
+  useEffect(() => {
+    const unsubscribe = addNetworkStatusListener(async nextStatus => {
+      setStatus(nextStatus);
+      if (nextStatus === 'online') {
+        try {
+          await replayQueue(replayItem);
+        } catch (error) {
+          // noop
+        }
+      }
+    });
+    startNetworkPolling().catch(() => {});
+    return unsubscribe;
+  }, []);
+
+  return children;
+}
 
 function AppNavigator() {
   const { user, loading } = useContext(AuthContext);
@@ -61,10 +86,13 @@ export default function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <NavigationContainer ref={navigationRef}>
-          <NotificationManager />
-          <AppNavigator />
-        </NavigationContainer>
+        <SyncController>
+          <NavigationContainer ref={navigationRef}>
+            <NotificationManager />
+            <SyncStatusIndicator replayItem={replayItem} />
+            <AppNavigator />
+          </NavigationContainer>
+        </SyncController>
       </AuthProvider>
     </LanguageProvider>
   );
