@@ -1,6 +1,8 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api, { setAuthToken } from '../services/api';
+import { getProfile, updateProfile } from '../services/authService';
+import { clearBiometricData, setBiometricUnlocked } from '../services/biometricService';
 
 export const AuthContext = createContext(null);
 
@@ -73,11 +75,26 @@ export function AuthProvider({ children }) {
       AsyncStorage.removeItem(TOKEN_KEY),
       AsyncStorage.removeItem(USER_KEY),
     ]);
+    await clearBiometricData();
   };
 
+  const refreshProfile = useCallback(async () => {
+    const next = await getProfile();
+    setUser(next);
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(next));
+    return next;
+  }, []);
+
+  const saveProfile = useCallback(async (profile) => {
+    const next = await updateProfile({ ...profile, id: user?.id });
+    setUser(next);
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(next));
+    return next;
+  }, [user]);
+
   const value = useMemo(
-    () => ({ user, token, loading, login, register, logout }),
-    [user, token, loading],
+    () => ({ user, token, loading, login, register, logout, refreshProfile, saveProfile }),
+    [user, token, loading, refreshProfile, saveProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

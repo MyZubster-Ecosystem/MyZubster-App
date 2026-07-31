@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -16,19 +16,58 @@ import ProfileScreen from './app/screens/ProfileScreen';
 import ReviewsScreen from './app/screens/ReviewsScreen';
 import MapScreen from './app/screens/MapScreen';
 import NotificationsScreen from './app/screens/NotificationsScreen';
+import UnlockScreen from './app/screens/UnlockScreen';
 import NotificationManager from './app/components/NotificationManager';
 import { navigationRef } from './app/navigation/navigationRef';
+import { isBiometricEnabled, isBiometricUnlocked, onBiometricUnlocked } from './app/services/biometricService';
 
 const Stack = createNativeStackNavigator();
 
 function AppNavigator() {
   const { user, loading } = useContext(AuthContext);
+  const [needsUnlock, setNeedsUnlock] = useState(false);
+  const [checkingUnlock, setCheckingUnlock] = useState(false);
 
-  if (loading) {
+  useEffect(() => {
+    let mounted = true;
+    const check = async () => {
+      if (!user) {
+        setNeedsUnlock(false);
+        return;
+      }
+      setCheckingUnlock(true);
+      try {
+        const [enabled, unlocked] = await Promise.all([isBiometricEnabled(), isBiometricUnlocked()]);
+        if (mounted) {
+          setNeedsUnlock(enabled && !unlocked);
+        }
+      } catch (error) {
+        if (mounted) setNeedsUnlock(false);
+      } finally {
+        if (mounted) setCheckingUnlock(false);
+      }
+    };
+    check();
+    // 解锁成功后复位 needsUnlock，切回主界面
+    const unsubscribe = onBiometricUnlocked(() => {
+      if (mounted) setNeedsUnlock(false);
+    });
+    return () => { mounted = false; unsubscribe(); };
+  }, [user]);
+
+  if (loading || checkingUnlock) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#6200EE" />
       </View>
+    );
+  }
+
+  if (needsUnlock) {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen name="Unlock" component={UnlockScreen} options={{ headerShown: false }} />
+      </Stack.Navigator>
     );
   }
 

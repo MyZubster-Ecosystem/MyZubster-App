@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { isValidEmail, isValidPassword } from '../utils/validators';
 
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -14,6 +15,14 @@ export default function RegisterScreen({ navigation }) {
   const handleRegister = async () => {
     if (!email || !password || !name) {
       Alert.alert('❌ ' + t('auth.registerError'), t('auth.fillAllFields'));
+      return;
+    }
+    if (!isValidEmail(email)) {
+      Alert.alert('❌ ' + t('auth.registerError'), 'Inserisci un indirizzo email valido.');
+      return;
+    }
+    if (!isValidPassword(password)) {
+      Alert.alert('❌ ' + t('auth.registerError'), 'La password deve contenere almeno 6 caratteri.');
       return;
     }
 

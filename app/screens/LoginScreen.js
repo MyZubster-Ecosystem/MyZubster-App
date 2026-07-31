@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
+import { isValidEmail, isValidPassword } from '../utils/validators';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -11,6 +12,14 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('❌ Errore', 'Inserisci email e password.');
+      return;
+    }
+    if (!isValidEmail(email)) {
+      Alert.alert('❌ Errore', 'Inserisci un indirizzo email valido.');
+      return;
+    }
+    if (!isValidPassword(password)) {
+      Alert.alert('❌ Errore', 'La password deve contenere almeno 6 caratteri.');
       return;
     }
 

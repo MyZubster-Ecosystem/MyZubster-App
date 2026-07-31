@@ -46,6 +46,9 @@ export async function updateProfile(profile) {
     email: profile.email,
     username: profile.username,
     walletAddress: profile.walletAddress || profile.moneroAddress,
+    ethAddress: profile.ethAddress,
+    investorStatus: profile.investorStatus,
+    investorDetails: profile.investorDetails,
   };
   try {
     const { data } = await api.put('/users/me', payload);
