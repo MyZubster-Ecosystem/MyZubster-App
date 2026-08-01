@@ -20,6 +20,7 @@ import RewardsScreen from './app/screens/RewardsScreen';
 import UrbanReportScreen from './app/screens/UrbanReportScreen';
 import MunicipalReportsScreen from './app/screens/MunicipalReportsScreen';
 import GamificationScreen from './app/screens/GamificationScreen';
+import DroneFleetScreen from './app/screens/DroneFleetScreen';
 import { initPrivacyPreferences } from './app/services/privacyService';
 import NotificationManager from './app/components/NotificationManager';
 import { navigationRef } from './app/navigation/navigationRef';
@@ -60,6 +61,7 @@ function AppNavigator() {
           <Stack.Screen name="UrbanReport" component={UrbanReportScreen} />
           <Stack.Screen name="MunicipalReports" component={MunicipalReportsScreen} />
           <Stack.Screen name="Gamification" component={GamificationScreen} />
+          <Stack.Screen name="DroneFleet" component={DroneFleetScreen} />
         </>
       )}
     </Stack.Navigator>
