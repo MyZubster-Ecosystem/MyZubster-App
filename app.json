@@ -35,6 +35,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      "expo-notifications",
+      "expo-location",
+      "expo-secure-store"
+    ],
     "scheme": "myzubster"
   }
 }
