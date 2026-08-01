@@ -15,6 +15,7 @@ import AnonymousLoginScreen from './app/screens/AnonymousLoginScreen';
 import ProfileScreen from './app/screens/ProfileScreen';
 import ReviewsScreen from './app/screens/ReviewsScreen';
 import MapScreen from './app/screens/MapScreen';
+import CityMapScreen from './app/screens/CityMapScreen';
 import NotificationsScreen from './app/screens/NotificationsScreen';
 import RewardsScreen from './app/screens/RewardsScreen';
 import DroneFleetScreen from './app/screens/DroneFleetScreen';
@@ -53,6 +54,7 @@ function AppNavigator() {
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Reviews" component={ReviewsScreen} />
           <Stack.Screen name="Map" component={MapScreen} />
+          <Stack.Screen name="CityMap" component={CityMapScreen} />
           <Stack.Screen name="Notifications" component={NotificationsScreen} />
           <Stack.Screen name="Rewards" component={RewardsScreen} />
           <Stack.Screen name="DroneFleet" component={DroneFleetScreen} />
