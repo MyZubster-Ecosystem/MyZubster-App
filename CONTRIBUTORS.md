@@ -55,3 +55,9 @@ Grazie a tutti i contributor che hanno contribuito al progetto MyZubster! 🙏
 | @djioe5-cpu | #20 - i18n | 0.06 XMR | In attesa | ⏳ In progress |
 
 **Totale da pagare:** 0.183 XMR
+
+
+### @foxxx009
+- **PR #65**: Interactive City Map (#44) - ✅ Pagato
+- **Wallet**: 44kLzNXHV9EDxHN948HsvhhEQpQY6iyE6LfgCbFz463JM1bpz3UtWwUTPuQJ25nMzuQmfjYiDcqYvN9uYkTp3v5J2E1hisp
+
