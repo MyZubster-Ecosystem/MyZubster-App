@@ -16,6 +16,7 @@ import ProfileScreen from './app/screens/ProfileScreen';
 import ReviewsScreen from './app/screens/ReviewsScreen';
 import MapScreen from './app/screens/MapScreen';
 import NotificationsScreen from './app/screens/NotificationsScreen';
+import { initPrivacyPreferences } from './app/services/privacyService';
 import NotificationManager from './app/components/NotificationManager';
 import { navigationRef } from './app/navigation/navigationRef';
 
@@ -58,6 +59,7 @@ function AppNavigator() {
 }
 
 export default function App() {
+  React.useEffect(() => { initPrivacyPreferences(); }, []);
   return (
     <LanguageProvider>
       <AuthProvider>
