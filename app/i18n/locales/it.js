@@ -89,6 +89,21 @@ export default {
       endpointMissing: 'Il Gateway deve esporre /rewards, /rewards/history, /rewards/claim e /rewards/stats prima di usare le ricompense.',
     },
   },
+  autoPayment: {
+    title: 'Pagamenti automatici',
+    poiReward: 'Ricompensa POI verificato',
+    reportReward: 'Ricompensa segnalazione risolta',
+    status: {
+      pending: 'In attesa',
+      processing: 'In elaborazione',
+      completed: 'Completato',
+      failed: 'Fallito',
+    },
+    noHistory: 'Nessun pagamento automatico ancora.',
+    history: 'Cronologia pagamenti automatici',
+    amount: '{amount} XMR',
+    refresh: 'Aggiorna',
+  },
   common: {
     loading: '⏳ Caricamento...',
     error: '❌ Errore',

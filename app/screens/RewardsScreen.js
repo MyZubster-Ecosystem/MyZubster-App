@@ -19,6 +19,7 @@ import {
   getRewards,
   isRewardsEndpointError,
 } from '../services/rewardsService';
+import { getAutoPaymentHistory } from '../services/autoPaymentService';
 
 const formatXmr = value => Number(value || 0).toFixed(8);
 const pickAddress = stats =>
@@ -35,12 +36,31 @@ export default function RewardsScreen({ navigation }) {
   const load = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true); else setLoading(true);
     try {
-      const [nextStats, nextHistory] = await Promise.all([
+      const [nextStats, nextHistory, nextAutoHistory] = await Promise.all([
         getRewards(),
         getRewardHistory(),
+        getAutoPaymentHistory().catch(() => []),
       ]);
       setStats(nextStats);
-      setHistory(nextHistory);
+      // Merge reward history with auto-payment history, sorted by date.
+      const autoItems = (nextAutoHistory || []).map(item => ({
+        id: `auto-${item.referenceType}-${item.referenceId}`,
+        txid: item.txid,
+        amount: item.amount,
+        description:
+          item.referenceType === 'poi'
+            ? t('autoPayment.poiReward')
+            : t('autoPayment.reportReward'),
+        status: t(`autoPayment.status.${item.status}`, { defaultValue: item.status }),
+        createdAt: item.createdAt,
+        claimable: false,
+      }));
+      const merged = [...nextHistory, ...autoItems].sort((a, b) => {
+        const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return db - da; // newest first
+      });
+      setHistory(merged);
     } catch (error) {
       if (isRewardsEndpointError(error)) {
         Alert.alert(t('rewards.title'), t('rewards.alert.endpointMissing'));
