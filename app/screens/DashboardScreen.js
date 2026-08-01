@@ -50,6 +50,8 @@ export default function DashboardScreen({ navigation }) {
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Map')}><Text style={styles.actionEmoji}>MAP</Text><Text>Mappa</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('UrbanReport')}><Text style={styles.actionEmoji}>RPT</Text><Text>Segnala</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('MunicipalReports')}><Text style={styles.actionEmoji}>ADM</Text><Text>Comune</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Gamification')}><Text style={styles.actionEmoji}>PTS</Text><Text>Punti</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Notifications')}><Text style={styles.actionEmoji}>NTF</Text><Text>Notifiche</Text></TouchableOpacity>
     </View>
     <TouchableOpacity style={styles.torButton} onPress={handleOrbot}><Text style={styles.torText}>{orbot?.installed ? 'Avvia Orbot' : 'Configura privacy'}</Text></TouchableOpacity>
     <View style={styles.titleRow}><Text style={styles.sectionTitle}>{t('dashboard.title')}</Text><TouchableOpacity onPress={() => load(true)}><Text style={styles.refresh}>Aggiorna</Text></TouchableOpacity></View>
