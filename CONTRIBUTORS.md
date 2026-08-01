@@ -44,3 +44,14 @@ Grazie a tutti i contributor che hanno contribuito al progetto MyZubster! 🙏
 
 💚 **Grazie a tutti per il supporto!** 
 🌍 **Insieme costruiamo un ecosistema decentralizzato!**
+
+## 💰 Pending Payments
+
+| Contributor | Issue | Amount | Wallet | Status |
+|-------------|-------|--------|--------|--------|
+| @Rerzx | #22 - Tor/Orbot | 0.06 XMR | `42FLsycMnVbbxSRg2As1XFPG1yvhCeaZFYHrzAsKgEapB1mjvtLnsWYQXp69Suh9Ug9d3Z1iru5xC3jE5w9bn1tKNhcUVQ4` | ⏳ In attesa |
+| @foxxx009 | #52 - Rewards System | 0.06 XMR | In attesa | ⏳ In attesa |
+| @Aming9303 | #48 - Gamification | 0.003 XMR | `45ynVR1NgjmJjPeGEvzPEg8s5rYJZkwQn8C5hzX2Tt8EC9s11VHemuZ3NQA59unUWTiTudyoNxvvQVLodMVthSZiNk5Xsk8` | ⏳ In attesa |
+| @djioe5-cpu | #20 - i18n | 0.06 XMR | In attesa | ⏳ In progress |
+
+**Totale da pagare:** 0.183 XMR
