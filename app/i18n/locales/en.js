@@ -89,6 +89,21 @@ export default {
       endpointMissing: 'The Gateway must expose /rewards, /rewards/history, /rewards/claim and /rewards/stats before using rewards.',
     },
   },
+  autoPayment: {
+    title: 'Auto payments',
+    poiReward: 'POI verified reward',
+    reportReward: 'Report resolved reward',
+    status: {
+      pending: 'Pending',
+      processing: 'Processing',
+      completed: 'Completed',
+      failed: 'Failed',
+    },
+    noHistory: 'No auto-payments yet.',
+    history: 'Auto-payment history',
+    amount: '{amount} XMR',
+    refresh: 'Refresh',
+  },
   common: {
     loading: '⏳ Loading...',
     error: '❌ Error',

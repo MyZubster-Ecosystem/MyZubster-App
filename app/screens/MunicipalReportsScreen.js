@@ -7,6 +7,11 @@ import {
   listUrbanReports,
   updateUrbanReportStatus,
 } from '../services/urbanReportService';
+import {
+  getDefaultAutoPaymentAmount,
+  isAutoPaymentEndpointError,
+  triggerReportPayment,
+} from '../services/autoPaymentService';
 
 const typeLabels = Object.fromEntries(URBAN_REPORT_TYPES.map(option => [option.id, option.label]));
 const priorityLabels = Object.fromEntries(URBAN_REPORT_PRIORITIES.map(option => [option.id, option.label]));
@@ -45,6 +50,20 @@ export default function MunicipalReportsScreen({ navigation }) {
     try {
       const updated = await updateUrbanReportStatus(report.id, status);
       setReports(current => current.map(item => (item.id === report.id ? updated : item)));
+
+      // Auto-payment: when a report is resolved, trigger XMR reward to the reporter.
+      if (status === 'resolved') {
+        try {
+          await triggerReportPayment(report.id, {
+            amount: getDefaultAutoPaymentAmount('report'),
+          });
+        } catch (payError) {
+          if (!isAutoPaymentEndpointError(payError)) {
+            console.warn('Auto-payment trigger failed:', payError.response?.data || payError.message);
+          }
+          // Silently degrade if the auto-payment endpoint is not yet deployed.
+        }
+      }
     } catch (error) {
       Alert.alert('Stato', error.response?.data?.error || error.message || 'Aggiornamento non riuscito.');
     } finally {

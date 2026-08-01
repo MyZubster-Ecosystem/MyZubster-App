@@ -89,6 +89,21 @@ export default {
       endpointMissing: 'La passerelle doit exposer /rewards, /rewards/history, /rewards/claim et /rewards/stats avant d\'utiliser les récompenses.',
     },
   },
+  autoPayment: {
+    title: 'Paiements automatiques',
+    poiReward: 'Récompense POI vérifié',
+    reportReward: 'Récompense signalement résolu',
+    status: {
+      pending: 'En attente',
+      processing: 'En cours',
+      completed: 'Terminé',
+      failed: 'Échoué',
+    },
+    noHistory: 'Aucun paiement automatique pour le moment.',
+    history: 'Historique des paiements automatiques',
+    amount: '{amount} XMR',
+    refresh: 'Actualiser',
+  },
   common: {
     loading: '⏳ Chargement...',
     error: '❌ Erreur',
