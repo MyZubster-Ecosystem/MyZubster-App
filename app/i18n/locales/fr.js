@@ -100,4 +100,55 @@ export default {
     edit: 'Modifier',
     search: 'Rechercher',
   },
+  municipal: {
+    title: 'Tableau de Bord Municipal',
+    reports: 'Signalements',
+    interventions: 'Interventions',
+    stats: {
+      totalReports: 'Total signalements',
+      totalInterventions: 'Total interventions',
+      avgResolutionTime: 'Temps moyen de résolution',
+    },
+    status: {
+      accepted: 'Acceptée',
+      inProgress: 'En cours',
+      resolved: 'Résolue',
+    },
+    updateStatus: 'Mettre à jour le statut',
+    export: {
+      csv: 'Exporter CSV',
+      geojson: 'Exporter GeoJSON',
+    },
+    fleet: {
+      title: 'Flotte de Drones',
+      status: 'Statut',
+      location: 'Localisation',
+    },
+    filters: {
+      all: 'Tous',
+      accepted: 'Acceptées',
+      inProgress: 'En cours',
+      resolved: 'Résolues',
+    },
+    empty: {
+      noReports: 'Aucun signalement.',
+      noInterventions: 'Aucune intervention.',
+      noFleet: 'Aucun drone disponible.',
+    },
+    back: '⬅ Retour au tableau de bord',
+    refresh: 'Actualiser',
+    reportDetail: 'Détail du signalement',
+    interventionDetail: 'Détail de l\'intervention',
+    coordinates: 'Coordonnées',
+    description: 'Description',
+    category: 'Catégorie',
+    createdAt: 'Date de création',
+    alert: {
+      loadDataFailed: 'Impossible de charger les données.',
+      loadDetailFailed: 'Impossible de charger le détail.',
+      updateSuccess: 'Statut mis à jour avec succès.',
+      updateFailed: 'La mise à jour a échoué.',
+    },
+  },
+
 };
