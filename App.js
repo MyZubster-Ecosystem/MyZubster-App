@@ -20,6 +20,8 @@ import RewardsScreen from './app/screens/RewardsScreen';
 import UrbanReportScreen from './app/screens/UrbanReportScreen';
 import MunicipalReportsScreen from './app/screens/MunicipalReportsScreen';
 import GamificationScreen from './app/screens/GamificationScreen';
+import DroneWalletScreen from './app/screens/DroneWalletScreen';
+import DroneDashboardScreen from './app/screens/DroneDashboardScreen';
 import { initPrivacyPreferences } from './app/services/privacyService';
 import NotificationManager from './app/components/NotificationManager';
 import { navigationRef } from './app/navigation/navigationRef';
@@ -60,6 +62,8 @@ function AppNavigator() {
           <Stack.Screen name="UrbanReport" component={UrbanReportScreen} />
           <Stack.Screen name="MunicipalReports" component={MunicipalReportsScreen} />
           <Stack.Screen name="Gamification" component={GamificationScreen} />
+          <Stack.Screen name="DroneWallet" component={DroneWalletScreen} />
+          <Stack.Screen name="DroneDashboard" component={DroneDashboardScreen} />
         </>
       )}
     </Stack.Navigator>

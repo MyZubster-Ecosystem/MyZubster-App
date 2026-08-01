@@ -45,6 +45,7 @@ export default function DashboardScreen({ navigation }) {
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Privacy')}><Text style={styles.actionEmoji}>🧅</Text><Text>Privacy</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('CreateOrder')}><Text style={styles.actionEmoji}>📦</Text><Text>Nuovo ordine</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Rewards')}><Text style={styles.actionEmoji}>🎁</Text><Text>{t('rewards.title')}</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('DroneDashboard')}><Text style={styles.actionEmoji}>🤖</Text><Text>{t('drone.dashboardTitle')}</Text></TouchableOpacity>
     </View>
     <View style={styles.quickActions}>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Map')}><Text style={styles.actionEmoji}>MAP</Text><Text>Mappa</Text></TouchableOpacity>
