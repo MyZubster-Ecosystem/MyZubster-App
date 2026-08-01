@@ -7,9 +7,12 @@ describe('new mobile issue contracts', () => {
     expect(appConfig.expo.android.permissions).toEqual(expect.arrayContaining([
       'ACCESS_COARSE_LOCATION',
       'ACCESS_FINE_LOCATION',
-      'POST_NOTIFICATIONS',
+      'CAMERA',
+      'READ_EXTERNAL_STORAGE',
+      'WRITE_EXTERNAL_STORAGE',
+      'RECORD_AUDIO',
     ]));
-    expect(appConfig.expo.plugins).toEqual(expect.arrayContaining(['expo-notifications', 'expo-location', 'expo-secure-store']));
+    expect(appConfig.expo.plugins).toEqual(expect.arrayContaining(['expo-camera', 'expo-location', 'expo-secure-store']));
   });
 
   test('notification preferences default to all marketplace event types enabled', () => {

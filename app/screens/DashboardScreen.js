@@ -52,6 +52,9 @@ export default function DashboardScreen({ navigation }) {
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('MunicipalReports')}><Text style={styles.actionEmoji}>ADM</Text><Text>Comune</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Gamification')}><Text style={styles.actionEmoji}>PTS</Text><Text>Punti</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Notifications')}><Text style={styles.actionEmoji}>NTF</Text><Text>Notifiche</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('CityMap')}><Text style={styles.actionEmoji}>🗺️</Text><Text>{t('cityMap.title')}</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('WasteReport')}><Text style={styles.actionEmoji}>♻️</Text><Text>{t('wasteDetection.title')}</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('AIReportsDashboard')}><Text style={styles.actionEmoji}>📊</Text><Text>{t('wasteDetection.dashboardTitle')}</Text></TouchableOpacity>
     </View>
     <TouchableOpacity style={styles.torButton} onPress={handleOrbot}><Text style={styles.torText}>{orbot?.installed ? 'Avvia Orbot' : 'Configura privacy'}</Text></TouchableOpacity>
     <View style={styles.titleRow}><Text style={styles.sectionTitle}>{t('dashboard.title')}</Text><TouchableOpacity onPress={() => load(true)}><Text style={styles.refresh}>Aggiorna</Text></TouchableOpacity></View>
@@ -75,7 +78,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
   headerText: { flex: 1 }, welcome: { fontSize: 20, fontWeight: '700' }, subtle: { color: '#777', marginTop: 4 }, logout: { color: '#c62828', fontWeight: '600' },
-  quickActions: { flexDirection: 'row', gap: 8, marginBottom: 10 }, action: { flex: 1, backgroundColor: 'white', borderRadius: 10, padding: 12, alignItems: 'center' }, actionEmoji: { fontSize: 24, marginBottom: 4 },
+  quickActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 10 }, action: { width: '30%', backgroundColor: 'white', borderRadius: 10, padding: 12, alignItems: 'center' }, actionEmoji: { fontSize: 24, marginBottom: 4 },
   torButton: { borderWidth: 1, borderColor: '#7B2FBE', borderRadius: 8, padding: 10, alignItems: 'center', marginBottom: 18 }, torText: { color: '#7B2FBE', fontWeight: '700' },
   titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, sectionTitle: { fontSize: 18, fontWeight: '700', marginBottom: 10 }, refresh: { color: '#1976D2' }, list: { paddingBottom: 20 },
   orderCard: { backgroundColor: 'white', padding: 16, borderRadius: 10, marginBottom: 10 }, orderHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, orderId: { fontWeight: '700' }, badge: { color: 'white', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, fontSize: 11, overflow: 'hidden' }, pending: { backgroundColor: '#f39c12' }, completed: { backgroundColor: '#2e7d32' }, amount: { fontSize: 16, marginTop: 10, fontWeight: '600' }, address: { color: '#4976aa', marginTop: 6, fontSize: 12 }, empty: { alignItems: 'center', paddingTop: 50 }, emptyText: { fontSize: 16, marginBottom: 6 },
