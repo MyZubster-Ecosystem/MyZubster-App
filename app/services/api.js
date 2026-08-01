@@ -12,6 +12,11 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+export function setTorProxyRequested(enabled) {
+  if (enabled) api.defaults.headers.common['X-Tor-Requested'] = 'true';
+  else delete api.defaults.headers.common['X-Tor-Requested'];
+}
+
 export function setAuthToken(token) {
   if (token) api.defaults.headers.common.Authorization = `Bearer ${token}`;
   else delete api.defaults.headers.common.Authorization;
