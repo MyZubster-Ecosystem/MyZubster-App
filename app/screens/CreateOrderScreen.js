@@ -1,100 +1,333 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useContext, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { AuthContext } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import { createOrder } from '../services/orderService';
+import { createOrder } from '../services/api';
+import {
+  ORDER_TOKENS,
+  calculateOrderTotals,
+  formatXmr,
+  getPaymentExpiry,
+} from '../services/orderUtils';
 
-export default function CreateOrderScreen({ navigation }) {
-  const { user } = useContext(AuthContext);
-  const { t } = useLanguage();
-  const [skillId, setSkillId] = useState('');
-  const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState('USD');
+export default function CreateOrderScreen({ navigation, route }) {
+  const { token, user } = useContext(AuthContext);
+  const routeToken = route.params?.token;
+  const [selectedToken, setSelectedToken] = useState(routeToken || ORDER_TOKENS[0]);
+  const [amount, setAmount] = useState('1');
+  const [customerEmail, setCustomerEmail] = useState(user?.email || '');
+  const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const totals = useMemo(() => calculateOrderTotals(selectedToken, amount), [amount, selectedToken]);
+  const canSubmit = !loading && totals.tokenAmount > 0 && totals.moneroAmount > 0;
+
   const handleCreateOrder = async () => {
-    if (!skillId || !amount) {
-      Alert.alert('❌ ' + t('createOrder.error'), t('createOrder.errorMessage'));
+    if (!canSubmit) {
+      Alert.alert('Invalid order', 'Select a token and enter an amount greater than zero.');
       return;
     }
 
-    setLoading(true);
-    try {
-      const order = await createOrder({
-        skillId,
-        amount: parseFloat(amount),
-        currency: currency.trim().toUpperCase(),
-        customerEmail: user?.email,
-      });
+    const createdAt = new Date().toISOString();
+    const fallbackOrder = {
+      tokenSymbol: selectedToken.symbol,
+      tokenName: selectedToken.name,
+      tokenAmount: totals.tokenAmount,
+      unitPriceXmr: totals.unitPriceXmr,
+      amount: totals.moneroAmount,
+      currency: 'XMR',
+      moneroAmount: totals.moneroAmount,
+      status: 'pending',
+      customerEmail,
+      notes: notes.trim(),
+      createdAt,
+      paymentExpiresAt: getPaymentExpiry(createdAt),
+    };
 
-      Alert.alert('✅ ' + t('common.success'), t('createOrder.successMessage'));
-      navigation.navigate('Order', { orderId: order.id || order._id });
+    setLoading(true);
+
+    try {
+      const order = await createOrder(
+        {
+          tokenSymbol: selectedToken.symbol,
+          tokenName: selectedToken.name,
+          tokenAmount: totals.tokenAmount,
+          unitPriceXmr: totals.unitPriceXmr,
+          amount: totals.moneroAmount,
+          totalPrice: totals.moneroAmount,
+          moneroAmount: totals.moneroAmount,
+          currency: 'XMR',
+          customerEmail: customerEmail || user?.email,
+          notes: notes.trim(),
+        },
+        token,
+        fallbackOrder,
+      );
+
+      Alert.alert('Order created', 'Open the payment screen to complete the Monero payment.');
+      navigation.replace('Order', { orderId: order.id, initialOrder: order });
     } catch (error) {
-      console.error('Errore creazione ordine:', error);
-      Alert.alert('❌ ' + t('createOrder.error'), error.response?.data?.error || t('createOrder.errorMessage'));
+      Alert.alert(
+        'Order creation failed',
+        error.response?.data?.error || error.response?.data?.message || error.message || 'Please try again.',
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>{t('createOrder.title')}</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={styles.keyboardView}
+    >
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.label}>{t('createOrder.skillId')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('createOrder.skillIdPlaceholder')}
-        value={skillId}
-        onChangeText={setSkillId}
-        keyboardType="numeric"
-      />
+        <Text style={styles.title}>Create Order</Text>
+        <Text style={styles.subtitle}>Select a token, enter the amount, then pay the generated Monero invoice.</Text>
 
-      <Text style={styles.label}>{t('createOrder.amount')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('createOrder.amountPlaceholder')}
-        value={amount}
-        onChangeText={setAmount}
-        keyboardType="numeric"
-      />
+        <Text style={styles.sectionLabel}>Token</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tokenScroller}>
+          {ORDER_TOKENS.map((item) => {
+            const selected = item.symbol === selectedToken.symbol;
 
-      <Text style={styles.label}>{t('createOrder.currency')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('createOrder.currencyPlaceholder')}
-        value={currency}
-        onChangeText={setCurrency}
-        autoCapitalize="characters"
-      />
+            return (
+              <TouchableOpacity
+                key={item.symbol}
+                style={[styles.tokenButton, selected && styles.tokenButtonSelected]}
+                onPress={() => setSelectedToken(item)}
+              >
+                <Text style={[styles.tokenSymbol, selected && styles.tokenTextSelected]}>{item.symbol}</Text>
+                <Text style={[styles.tokenPrice, selected && styles.tokenTextSelected]}>
+                  {formatXmr(item.unitPriceXmr)} XMR
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
 
-      <TouchableOpacity
-        style={[styles.submitButton, loading && styles.disabled]}
-        onPress={handleCreateOrder}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.submitButtonText}>{t('createOrder.createButton')}</Text>
-        )}
-      </TouchableOpacity>
+        <Text style={styles.sectionLabel}>Amount</Text>
+        <TextInput
+          style={styles.input}
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="decimal-pad"
+          placeholder="1"
+          placeholderTextColor="#9ca3af"
+        />
 
-      <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <Text style={styles.sectionLabel}>Customer email</Text>
+        <TextInput
+          style={styles.input}
+          value={customerEmail}
+          onChangeText={setCustomerEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          placeholder="customer@example.com"
+          placeholderTextColor="#9ca3af"
+        />
+
+        <Text style={styles.sectionLabel}>Order notes</Text>
+        <TextInput
+          style={[styles.input, styles.notesInput]}
+          value={notes}
+          onChangeText={setNotes}
+          multiline
+          placeholder="Service details, delivery notes, or escrow context"
+          placeholderTextColor="#9ca3af"
+        />
+
+        <View style={styles.summaryCard}>
+          <Text style={styles.summaryTitle}>Order Summary</Text>
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Token</Text>
+            <Text style={styles.summaryValue}>{selectedToken.symbol}</Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Token amount</Text>
+            <Text style={styles.summaryValue}>{totals.tokenAmount}</Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Unit price</Text>
+            <Text style={styles.summaryValue}>{formatXmr(totals.unitPriceXmr)} XMR</Text>
+          </View>
+          <View style={[styles.summaryRow, styles.totalRow]}>
+            <Text style={styles.totalLabel}>Total due</Text>
+            <Text style={styles.totalValue}>{formatXmr(totals.moneroAmount)} XMR</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={[styles.submitButton, !canSubmit && styles.submitButtonDisabled]}
+          onPress={handleCreateOrder}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#ffffff" />
+          ) : (
+            <Text style={styles.submitButtonText}>Create Monero Order</Text>
+          )}
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5', padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-  label: { fontSize: 16, fontWeight: '600', marginBottom: 6 },
-  input: { backgroundColor: '#fff', padding: 12, borderRadius: 8, marginBottom: 16, borderWidth: 1, borderColor: '#ddd' },
-  submitButton: { backgroundColor: '#4CAF50', padding: 16, borderRadius: 8, alignItems: 'center', marginTop: 8 },
-  disabled: { backgroundColor: '#a5d6a7' },
-  submitButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  cancelButton: { padding: 16, borderRadius: 8, alignItems: 'center', marginTop: 8 },
-  cancelButtonText: { color: '#666', fontSize: 16 },
+  keyboardView: {
+    flex: 1,
+  },
+  container: {
+    backgroundColor: '#f9fafb',
+    flex: 1,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 36,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 12,
+    paddingVertical: 6,
+  },
+  backButtonText: {
+    color: '#2563eb',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  title: {
+    color: '#111827',
+    fontSize: 28,
+    fontWeight: '800',
+    letterSpacing: 0,
+  },
+  subtitle: {
+    color: '#6b7280',
+    fontSize: 15,
+    lineHeight: 22,
+    marginBottom: 24,
+    marginTop: 8,
+  },
+  sectionLabel: {
+    color: '#374151',
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 8,
+    marginTop: 14,
+  },
+  tokenScroller: {
+    marginHorizontal: -4,
+  },
+  tokenButton: {
+    backgroundColor: '#ffffff',
+    borderColor: '#d1d5db',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginHorizontal: 4,
+    minWidth: 132,
+    padding: 14,
+  },
+  tokenButtonSelected: {
+    backgroundColor: '#111827',
+    borderColor: '#111827',
+  },
+  tokenSymbol: {
+    color: '#111827',
+    fontSize: 16,
+    fontWeight: '800',
+  },
+  tokenPrice: {
+    color: '#6b7280',
+    fontSize: 12,
+    marginTop: 6,
+  },
+  tokenTextSelected: {
+    color: '#ffffff',
+  },
+  input: {
+    backgroundColor: '#ffffff',
+    borderColor: '#d1d5db',
+    borderRadius: 8,
+    borderWidth: 1,
+    color: '#111827',
+    fontSize: 16,
+    padding: 14,
+  },
+  notesInput: {
+    minHeight: 88,
+    textAlignVertical: 'top',
+  },
+  summaryCard: {
+    backgroundColor: '#ffffff',
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginTop: 22,
+    padding: 16,
+  },
+  summaryTitle: {
+    color: '#111827',
+    fontSize: 18,
+    fontWeight: '800',
+    marginBottom: 12,
+  },
+  summaryRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 7,
+  },
+  summaryLabel: {
+    color: '#6b7280',
+    fontSize: 14,
+  },
+  summaryValue: {
+    color: '#111827',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  totalRow: {
+    borderTopColor: '#e5e7eb',
+    borderTopWidth: 1,
+    marginTop: 6,
+    paddingTop: 12,
+  },
+  totalLabel: {
+    color: '#111827',
+    fontSize: 16,
+    fontWeight: '800',
+  },
+  totalValue: {
+    color: '#f97316',
+    fontSize: 18,
+    fontWeight: '900',
+  },
+  submitButton: {
+    alignItems: 'center',
+    backgroundColor: '#16a34a',
+    borderRadius: 8,
+    marginTop: 18,
+    padding: 16,
+  },
+  submitButtonDisabled: {
+    backgroundColor: '#9ca3af',
+  },
+  submitButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '800',
+  },
 });
