@@ -8,3 +8,4 @@
 
 **💰 Indirizzo XMR:** *Da confermare al momento del pagamento*
 
+| **MyZubster-Robot** | [#88](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/88) | [x402 Subscription] Robot-as-a-Service con x402 | Bounty | ✅ Assegnata |
