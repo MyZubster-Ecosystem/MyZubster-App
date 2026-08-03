@@ -12,3 +12,4 @@
 | **MyZubster-Robot** | [#98](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/98) | [x402 Subscription] Implementation PR | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#100](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/100) | [x402 P2P] Pagamenti tra robot con x402 | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#96](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/96) | Add conditional x402 payment + HTTP adapter | Bounty | 🔄 In revisione (scope ampliato) |
+| **MyZubster-Robot** | [#74](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/74) | [Agriculture] Robot che risparmia acqua in agricoltura | Bounty | 🔄 In revisione |
