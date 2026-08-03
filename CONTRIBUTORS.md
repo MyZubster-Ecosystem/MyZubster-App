@@ -18,3 +18,4 @@
 | **MyZubsterGateway** | [#221](https://github.com/MyZubster-Ecosystem/MyZubsterGateway/pull/221) | PR: Dockerfile per il frontend (#214) | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#77](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/77) | [Agriculture] Robot che costruisce e pianta semi | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#105](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/105) | [Dashboard] Dashboard pagamenti x402 e Escrow (#90) | Bounty | 🔄 In revisione |
+| **MyZubster-Robot** | [#76](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/76) | [Gardening] Robot che risparmia tempo in giardino | Bounty | 🔄 In revisione |
