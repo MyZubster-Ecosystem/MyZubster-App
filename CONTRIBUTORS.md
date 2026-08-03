@@ -26,3 +26,4 @@
 | **MyZubster-Robot** | [#80](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/80) | [Assembly Line] Catena di montaggio robotica | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#111](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/111) | [x402+Escrow] Flusso di pagamento automatizzato (#86) | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#81](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/81) | [Auto-Config] Robot che configura robot figli | Bounty | 🔄 In revisione |
+| **MyZubster-Robot** | [#85](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/85) | [Energy Independence] Robot che si ricarica autonomamente | Bounty | 🔄 In revisione |
