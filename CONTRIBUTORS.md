@@ -29,3 +29,4 @@
 | **MyZubster-Robot** | [#85](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/85) | [Energy Independence] Robot che si ricarica autonomamente | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#114](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/114) | [x402 Multisig] Escrow con Monero multisig reale (#93) | Bounty | 🔄 In revisione |
 | **myzubster** | [#62](https://github.com/MyZubster-Ecosystem/myzubster/issues/62) | [Issue] Da definire | Bounty | ✅ Assegnata |
+| **MyZubster-Robot** | [#70](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/70) | [Robot] Tagliaerba modulare sotto 200€ | Bounty | 🔄 In revisione |
