@@ -15,3 +15,4 @@
 | **MyZubster-Robot** | [#74](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/74) | [Agriculture] Robot che risparmia acqua in agricoltura | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#79](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/79) | [Robot DNA] Crea il DNA robotico per ereditarietà | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#82](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/82) | [Genealogy Tree] Dashboard albero genealogico robot | Bounty | 🔄 In revisione |
+| **MyZubsterGateway** | [#221](https://github.com/MyZubster-Ecosystem/MyZubsterGateway/pull/221) | PR: Dockerfile per il frontend (#214) | Bounty | 🔄 In revisione |
