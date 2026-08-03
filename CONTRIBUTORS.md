@@ -21,3 +21,4 @@
 | **MyZubster-Robot** | [#76](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/76) | [Gardening] Robot che risparmia tempo in giardino | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#106](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/106) | [Grandfather Robot] Robot che insegna ai nipoti (#84) | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#106](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/106) | [Grandfather Robot] Robot che insegna ai nipoti (#84) | Bounty | 🔄 In revisione |
+| **MyZubster-Robot** | [#108](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/108) | [Evolution] Robot che migliora i figli (#83) | Bounty | 🔄 In revisione |
