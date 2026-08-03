@@ -48,3 +48,33 @@ The `--no-bytecode` export is a Metro/Expo smoke check. A release Android build 
 
 - [MyZubster Gateway](https://github.com/MyZubster-Ecosystem/MyZubsterGateway)
 - [MyZubster Marketplace](https://github.com/MyZubster-Ecosystem/MyZubster-Marketplace)
+
+---
+
+## 🔍 Project Status (Real)
+
+| Feature | Status | Note |
+|---------|--------|------|
+| Robot DNA Schema | ✅ Complete | Production ready |
+| x402 Micropayments | 🔄 In Progress | Testnet only |
+| Monero Escrow | 🔄 In Progress | Testnet only |
+| Self-Replication | 🧪 Simulation | Software simulation only |
+| FCMP++ Integration | 🔄 In Progress | `FCMP_ENABLED=false` |
+| Geolocation | 🔄 In Progress | 50-100m accuracy |
+| Animal Registry | ✅ Complete | Production ready |
+
+## 🤖 Transparency Note
+
+This project uses automation (bots) to help manage issues, PRs, and bounties. All automated actions are reviewed by human maintainers before final decisions are made.
+
+- **Bot account:** @myzubster-bot (coming soon)
+- **Automated tasks:** Issue triage, PR validation, bounty tracking
+- **Human review:** Every PR is reviewed by at least one maintainer
+
+## ⚠️ Known Limitations
+
+- FCMP++ is currently disabled (`FCMP_ENABLED=false`)
+- x402 features are on testnet only
+- Self-replication is software simulation, not hardware
+- Geolocation accuracy is 50-100m (improvement planned)
+
