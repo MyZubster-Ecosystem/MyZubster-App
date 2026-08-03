@@ -27,3 +27,4 @@
 | **MyZubster-Robot** | [#111](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/111) | [x402+Escrow] Flusso di pagamento automatizzato (#86) | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#81](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/81) | [Auto-Config] Robot che configura robot figli | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#85](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/85) | [Energy Independence] Robot che si ricarica autonomamente | Bounty | 🔄 In revisione |
+| **MyZubster-Robot** | [#114](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/114) | [x402 Multisig] Escrow con Monero multisig reale (#93) | Bounty | 🔄 In revisione |
