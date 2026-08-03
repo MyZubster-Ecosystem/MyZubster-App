@@ -53,6 +53,7 @@ export default function DashboardScreen({ navigation }) {
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Gamification')}><Text style={styles.actionEmoji}>PTS</Text><Text>Punti</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Notifications')}><Text style={styles.actionEmoji}>NTF</Text><Text>Notifiche</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('CityMap')}><Text style={styles.actionEmoji}>🗺️</Text><Text>{t('cityMap.title')}</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Poi')}><Text style={styles.actionEmoji}>📍</Text><Text>{t('poi.title')}</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('WasteReport')}><Text style={styles.actionEmoji}>♻️</Text><Text>{t('wasteDetection.title')}</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('AIReportsDashboard')}><Text style={styles.actionEmoji}>📊</Text><Text>{t('wasteDetection.dashboardTitle')}</Text></TouchableOpacity>
     </View>
