@@ -20,3 +20,4 @@
 | **MyZubster-Robot** | [#105](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/105) | [Dashboard] Dashboard pagamenti x402 e Escrow (#90) | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#76](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/76) | [Gardening] Robot che risparmia tempo in giardino | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#106](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/106) | [Grandfather Robot] Robot che insegna ai nipoti (#84) | Bounty | 🔄 In revisione |
+| **MyZubster-Robot** | [#106](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/106) | [Grandfather Robot] Robot che insegna ai nipoti (#84) | Bounty | 🔄 In revisione |
