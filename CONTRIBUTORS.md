@@ -14,3 +14,4 @@
 | **MyZubster-Robot** | [#96](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/96) | Add conditional x402 payment + HTTP adapter | Bounty | 🔄 In revisione (scope ampliato) |
 | **MyZubster-Robot** | [#74](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/74) | [Agriculture] Robot che risparmia acqua in agricoltura | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#79](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/79) | [Robot DNA] Crea il DNA robotico per ereditarietà | Bounty | 🔄 In revisione |
+| **MyZubster-Robot** | [#82](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/82) | [Genealogy Tree] Dashboard albero genealogico robot | Bounty | 🔄 In revisione |
