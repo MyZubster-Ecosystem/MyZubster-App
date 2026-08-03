@@ -19,8 +19,8 @@
 | **MyZubster-Robot** | [#77](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/77) | [Agriculture] Robot che costruisce e pianta semi | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#105](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/105) | [Dashboard] Dashboard pagamenti x402 e Escrow (#90) | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#76](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/76) | [Gardening] Robot che risparmia tempo in giardino | Bounty | 🔄 In revisione |
-| **MyZubster-Robot** | [#106](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/106) | [Grandfather Robot] Robot che insegna ai nipoti (#84) | Bounty | 🔄 In revisione |
-| **MyZubster-Robot** | [#106](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/106) | [Grandfather Robot] Robot che insegna ai nipoti (#84) | Bounty | 🔄 In revisione |
+| **MyZubster-Robot** | [#106](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/106) | [Grandfather Robot] Robot che insegna ai nipoti (#84) + forgetting policy | Bounty | 🔄 In revisione (scope ampliato) |
+| **MyZubster-Robot** | [#106](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/106) | [Grandfather Robot] Robot che insegna ai nipoti (#84) + forgetting policy | Bounty | 🔄 In revisione (scope ampliato) |
 | **MyZubster-Robot** | [#108](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/108) | [Evolution] Robot che migliora i figli (#83) | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#78](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/78) | [Mother Robot] Robot madre MyZubster | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#80](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/80) | [Assembly Line] Catena di montaggio robotica | Bounty | 🔄 In revisione |
