@@ -24,3 +24,4 @@
 | **MyZubster-Robot** | [#108](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/108) | [Evolution] Robot che migliora i figli (#83) | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#78](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/78) | [Mother Robot] Robot madre MyZubster | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#80](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/80) | [Assembly Line] Catena di montaggio robotica | Bounty | 🔄 In revisione |
+| **MyZubster-Robot** | [#111](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/111) | [x402+Escrow] Flusso di pagamento automatizzato (#86) | Bounty | 🔄 In revisione |
