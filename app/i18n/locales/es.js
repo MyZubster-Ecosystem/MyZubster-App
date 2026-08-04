@@ -1,4 +1,23 @@
 export default {
+  drone: {
+    title: 'Kit de Dron para Residuos',
+    subtitle: 'Módulo 51 — kit de software, visión y autonomía',
+    maxPayload: 'Carga máxima',
+    flightBudget: 'Autonomía de vuelo',
+    geofence: 'Radio operativo',
+    visionModel: 'Modelo de visión',
+    board: 'Placa de cálculo',
+    lifecycle: 'Ciclo de misión',
+    runDemo: 'Ejecutar misión demo',
+    demoResult: 'Resultado misión demo',
+    completed: 'Completada',
+    finalState: 'Estado final',
+    collected: 'Recogido',
+    distance: 'Distancia planificada',
+    collectEvents: 'Eventos de recolección',
+    note: 'Solo software + pruebas simuladas + documentación; el prototipo físico y las pruebas de campo están fuera del alcance.',
+  },
+
   app: {
     title: 'MyZubster',
     subtitle: 'Pagos Monero autoalojados',
