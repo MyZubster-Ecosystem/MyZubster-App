@@ -1,4 +1,23 @@
 export default {
+  drone: {
+    title: 'Kit Drone de Collecte de Déchets',
+    subtitle: 'Module 51 — kit logiciel, vision et autonomie',
+    maxPayload: 'Charge utile max',
+    flightBudget: 'Autonomie de vol',
+    geofence: 'Rayon opérationnel',
+    visionModel: 'Modèle de vision',
+    board: 'Carte de calcul',
+    lifecycle: 'Cycle de mission',
+    runDemo: 'Exécuter mission démo',
+    demoResult: 'Résultat mission démo',
+    completed: 'Terminée',
+    finalState: 'État final',
+    collected: 'Collecté',
+    distance: 'Distance planifiée',
+    collectEvents: 'Événements de collecte',
+    note: 'Logiciel + tests simulés + documentation uniquement; le prototype physique et les tests sur le terrain sont hors périmètre.',
+  },
+
   app: {
     title: 'MyZubster',
     subtitle: 'Paiements Monero auto-hébergés',

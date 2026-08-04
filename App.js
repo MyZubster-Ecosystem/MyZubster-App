@@ -25,6 +25,7 @@ import GamificationScreen from './app/screens/GamificationScreen';
 import CityMapScreen from './app/screens/CityMapScreen';
 import WasteReportScreen from './app/screens/WasteReportScreen';
 import AIReportsDashboardScreen from './app/screens/AIReportsDashboardScreen';
+import DroneKitScreen from './app/screens/DroneKitScreen';
 import { initPrivacyPreferences } from './app/services/privacyService';
 import NotificationManager from './app/components/NotificationManager';
 import { navigationRef } from './app/navigation/navigationRef';
@@ -70,6 +71,7 @@ function AppNavigator() {
           <Stack.Screen name="CityMap" component={CityMapScreen} />
           <Stack.Screen name="WasteReport" component={WasteReportScreen} />
           <Stack.Screen name="AIReportsDashboard" component={AIReportsDashboardScreen} />
+          <Stack.Screen name="DroneKit" component={DroneKitScreen} />
         </>
       )}
     </Stack.Navigator>

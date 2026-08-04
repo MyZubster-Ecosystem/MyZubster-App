@@ -1,4 +1,23 @@
 export default {
+  drone: {
+    title: 'Drone Waste-Collection Kit',
+    subtitle: 'Module 51 — software, vision and autonomy control kit',
+    maxPayload: 'Max payload',
+    flightBudget: 'Flight budget',
+    geofence: 'Operating radius',
+    visionModel: 'Vision model',
+    board: 'Compute board',
+    lifecycle: 'Mission lifecycle',
+    runDemo: 'Run demo mission',
+    demoResult: 'Demo mission result',
+    completed: 'Completed',
+    finalState: 'Final state',
+    collected: 'Collected',
+    distance: 'Planned distance',
+    collectEvents: 'Collection events',
+    note: 'Software + mock tests + documentation only; the physical prototype and real field tests are out of scope.',
+  },
+
   app: {
     title: 'MyZubster',
     subtitle: 'Self-hosted Monero payments',
