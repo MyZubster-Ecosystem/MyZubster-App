@@ -1,0 +1,14 @@
+const express = require('express');
+const router = express.Router();
+const jc = require('../controllers/jobController');
+const jwt = require('jsonwebtoken');
+const auth = (req,res,next) => { const t = req.header('Authorization')?.replace('Bearer ',''); if(!t) return res.status(401).json({error:'No token'}); try{req.user=jwt.verify(t,process.env.JWT_SECRET||'secret');next();}catch(e){return res.status(401).json({error:'Invalid'});} };
+router.post('/', auth, jc.createJob);
+router.get('/', jc.getJobs);
+router.get('/stats', auth, jc.getStats);
+router.get('/:jobId', jc.getJob);
+router.post('/:jobId/accept', auth, jc.acceptJob);
+router.post('/:jobId/start', auth, jc.startJob);
+router.post('/:jobId/complete', auth, jc.completeJob);
+router.post('/:jobId/cancel', auth, jc.cancelJob);
+module.exports = router;
