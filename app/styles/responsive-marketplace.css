@@ -1,0 +1,110 @@
+/* Responsive Marketplace Styles */
+/* Mobile-first responsive enhancements */
+
+/* Base mobile styles */
+@media (max-width: 768px) {
+  .marketplace-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 8px;
+  }
+  
+  .marketplace-card {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  .marketplace-filters {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .marketplace-filter-btn {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .marketplace-search {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  
+  .marketplace-sort {
+    width: 100%;
+  }
+  
+  /* Mobile nav */
+  .marketplace-nav {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .marketplace-nav-item {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .marketplace-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .marketplace-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Card hover effects */
+.marketplace-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.marketplace-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Image responsiveness */
+.marketplace-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+
+/* Price tag */
+.marketplace-price {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--primary-color, #6C5CE7);
+}
+
+/* Empty state */
+.marketplace-empty {
+  text-align: center;
+  padding: 48px 16px;
+  color: #888;
+}
+
+/* Loading skeleton */
+.marketplace-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+  height: 200px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
