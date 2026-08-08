@@ -19,6 +19,8 @@ import NotificationsScreen from './app/screens/NotificationsScreen';
 import RewardsScreen from './app/screens/RewardsScreen';
 import PoiScreen from './app/screens/PoiScreen';
 import AddPoiScreen from './app/screens/AddPoiScreen';
+import VerificationScreen from './app/screens/VerificationScreen';
+import ReputationScreen from './app/screens/ReputationScreen';
 import UrbanReportScreen from './app/screens/UrbanReportScreen';
 import MunicipalReportsScreen from './app/screens/MunicipalReportsScreen';
 import GamificationScreen from './app/screens/GamificationScreen';
@@ -65,6 +67,8 @@ function AppNavigator() {
           <Stack.Screen name="Rewards" component={RewardsScreen} />
           <Stack.Screen name="Poi" component={PoiScreen} />
           <Stack.Screen name="AddPoi" component={AddPoiScreen} />
+          <Stack.Screen name="Verifications" component={VerificationScreen} />
+          <Stack.Screen name="Reputation" component={ReputationScreen} />
           <Stack.Screen name="UrbanReport" component={UrbanReportScreen} />
           <Stack.Screen name="MunicipalReports" component={MunicipalReportsScreen} />
           <Stack.Screen name="Gamification" component={GamificationScreen} />
