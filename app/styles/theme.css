@@ -1,0 +1,93 @@
+/* Dark/Light Mode Theme System */
+:root {
+  /* Light theme (default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e8e8e8;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --border-color: #e0e0e0;
+  --primary-color: #6C5CE7;
+  --primary-hover: #5A4BD1;
+  --success: #00B894;
+  --warning: #FDCB6E;
+  --danger: #E17055;
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --card-bg: #ffffff;
+  --nav-bg: #ffffff;
+  --input-bg: #ffffff;
+  --input-border: #d0d0d0;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-tertiary: #0f3460;
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-muted: #808080;
+  --border-color: #2a2a4a;
+  --primary-color: #7C6FF7;
+  --primary-hover: #8B7FF7;
+  --success: #55EFC4;
+  --warning: #FFEAA7;
+  --danger: #FF7675;
+  --card-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  --card-bg: #16213e;
+  --nav-bg: #0f3460;
+  --input-bg: #16213e;
+  --input-border: #2a2a4a;
+}
+
+/* Apply theme variables */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card, .marketplace-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+nav, .navbar {
+  background-color: var(--nav-bg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+input, select, textarea {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-primary);
+}
+
+button.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+button.primary:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-tertiary);
+}
