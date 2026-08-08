@@ -1,0 +1,52 @@
+{
+  "app": {
+    "name": "MyZubster",
+    "tagline": "Dein Tor zu Web3",
+    "welcome": "Willkommen bei MyZubster",
+    "dashboard": "Dashboard",
+    "marketplace": "Marktplatz",
+    "wallet": "Geldbörse",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "signin": "Anmelden",
+    "signup": "Registrieren"
+  },
+  "actions": {
+    "buy": "Kaufen",
+    "sell": "Verkaufen",
+    "send": "Senden",
+    "receive": "Empfangen",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "sort": "Sortieren",
+    "refresh": "Aktualisieren",
+    "load_more": "Mehr laden"
+  },
+  "status": {
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "empty": "Keine Ergebnisse",
+    "offline": "Offline",
+    "online": "Online"
+  },
+  "bounty": {
+    "title": "Prämien",
+    "open": "Offen",
+    "in_progress": "In Bearbeitung",
+    "completed": "Abgeschlossen",
+    "reward": "Belohnung",
+    "claim": "Beanspruchen",
+    "submit": "Lösung einreichen"
+  },
+  "wallet": {
+    "balance": "Guthaben",
+    "send_money": "MYZ senden",
+    "receive_money": "MYZ empfangen",
+    "history": "Verlauf",
+    "no_transactions": "Keine Transaktionen"
+  }
+}
