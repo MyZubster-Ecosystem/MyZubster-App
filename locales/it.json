@@ -1,0 +1,52 @@
+{
+  "app": {
+    "name": "MyZubster",
+    "tagline": "Il tuo gateway per il Web3",
+    "welcome": "Benvenuto su MyZubster",
+    "dashboard": "Cruscotto",
+    "marketplace": "Mercato",
+    "wallet": "Portafoglio",
+    "profile": "Profilo",
+    "settings": "Impostazioni",
+    "logout": "Esci",
+    "signin": "Accedi",
+    "signup": "Registrati"
+  },
+  "actions": {
+    "buy": "Compra",
+    "sell": "Vendi",
+    "send": "Invia",
+    "receive": "Ricevi",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
+    "search": "Cerca",
+    "filter": "Filtra",
+    "sort": "Ordina",
+    "refresh": "Aggiorna",
+    "load_more": "Carica altro"
+  },
+  "status": {
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "empty": "Nessun risultato",
+    "offline": "Sei offline",
+    "online": "Online"
+  },
+  "bounty": {
+    "title": "Ricompense",
+    "open": "Aperte",
+    "in_progress": "In corso",
+    "completed": "Completate",
+    "reward": "Ricompensa",
+    "claim": "Richiedi",
+    "submit": "Invia soluzione"
+  },
+  "wallet": {
+    "balance": "Saldo",
+    "send_money": "Invia MYZ",
+    "receive_money": "Ricevi MYZ",
+    "history": "Cronologia",
+    "no_transactions": "Nessuna transazione"
+  }
+}
