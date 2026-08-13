@@ -56,6 +56,7 @@ export default function DashboardScreen({ navigation }) {
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Poi')}><Text style={styles.actionEmoji}>📍</Text><Text>{t('poi.title')}</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('WasteReport')}><Text style={styles.actionEmoji}>♻️</Text><Text>{t('wasteDetection.title')}</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('AIReportsDashboard')}><Text style={styles.actionEmoji}>📊</Text><Text>{t('wasteDetection.dashboardTitle')}</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Verifications')}><Text style={styles.actionEmoji}>✅</Text><Text>{t('verification.title')}</Text></TouchableOpacity>
     </View>
     <TouchableOpacity style={styles.torButton} onPress={handleOrbot}><Text style={styles.torText}>{orbot?.installed ? 'Avvia Orbot' : 'Configura privacy'}</Text></TouchableOpacity>
     <View style={styles.titleRow}><Text style={styles.sectionTitle}>{t('dashboard.title')}</Text><TouchableOpacity onPress={() => load(true)}><Text style={styles.refresh}>Aggiorna</Text></TouchableOpacity></View>
