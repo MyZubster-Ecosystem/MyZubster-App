@@ -1,6 +1,10 @@
 # MyZubster App
 
-React Native/Expo 51 Android client for the MyZubster Gateway. The app provides authentication, order tracking, Monero payment QR codes, a Gateway-backed wallet screen, and Orbot privacy controls.
+React Native / Expo client for the MyZubster ecosystem.
+
+## Status
+
+**Development / active validation.** The app contains client flows for authentication, orders, payment QR/wallet-facing contracts and privacy/Orbot experiments. Backend capabilities must be verified against the configured Gateway before a UI flow is treated as operational.
 
 ## Development
 
@@ -9,31 +13,31 @@ npm ci
 npx expo start
 ```
 
-Set the Gateway URL in `app.json` (`expo.extra.apiUrl`) or with `EXPO_PUBLIC_API_URL`. The current client expects the Gateway under `/api` and uses `/auth/login`, `/auth/register`, `/orders`, and the wallet contract below.
+Configure the Gateway URL in `app.json` (`expo.extra.apiUrl`) or through `EXPO_PUBLIC_API_URL` where supported.
 
 ## Gateway contracts
 
-The order API creates a payment subaddress and returns `moneroAddress`, `moneroAmount`, `status`, `confirmations`, and `amountReceived`. The wallet screen expects:
+The client uses Gateway API contracts for authentication/orders and wallet-facing operations. The wallet UI may expect endpoints such as:
 
 | Method | Endpoint | Purpose |
-| --- | --- | --- |
-| GET | `/api/wallet` | balance and current address |
-| GET | `/api/wallet/transactions` | wallet transaction history |
-| POST | `/api/wallet/address` | create a receive address (`label`) |
-| POST | `/api/wallet/transfer` | send XMR (`address`, `amount`, optional `paymentId`) |
+|---|---|---|
+| GET | `/api/wallet` | balance/current address |
+| GET | `/api/wallet/transactions` | transaction history |
+| POST | `/api/wallet/address` | create receive address |
+| POST | `/api/wallet/transfer` | submit transfer request |
 
-Wallet endpoints must be implemented and authenticated by the Gateway before the mobile wallet can send funds. The app never stores spend keys in AsyncStorage.
+A client screen or API request does **not** prove that a real payment rail is available or that a transaction was externally settled. Gateway/verifier state is authoritative for external settlement.
 
-## Native build requirements
+## Native build
 
-QR scanning uses `expo-camera` and QR rendering uses `react-native-svg`; use a development build after installing native dependencies:
+QR scanning/rendering and Orbot-related functionality may require a development/native build rather than Expo Go.
 
 ```bash
 npx expo prebuild --clean
 npx expo run:android
 ```
 
-The Orbot screen can detect and start Orbot, but reporting an anonymous API connection requires a native SOCKS5 proxy module and a development build. Starting Orbot alone is not treated as full traffic tunnelling.
+Starting Orbot alone is not proof that all application traffic is tunnelled through Tor. Proxy routing must be verified independently.
 
 ## Checks
 
@@ -42,39 +46,33 @@ npm test -- --runInBand
 npx expo export --platform android --no-bytecode --output-dir /tmp/myzubster-export
 ```
 
-The `--no-bytecode` export is a Metro/Expo smoke check. A release Android build must be run on a machine with Android SDK/Gradle and a configured Gateway/Monero wallet RPC.
+A production Android release additionally requires a supported Android SDK/Gradle environment and correctly configured backend services.
+
+## Bounties
+
+Work in this repository may be associated with a MyZubster bounty only when the issue defines the deliverable, evidence, review and reward terms.
+
+- [Canonical Bounty System](https://github.com/MyZubster-Ecosystem/myzubster/blob/main/BOUNTIES.md)
+- [Ecosystem Architecture](https://github.com/MyZubster-Ecosystem/myzubster/blob/main/docs/ECOSYSTEM.md)
+
+MYZ in the current core platform is an internal reward/accounting ledger. Issue closure or PR merge is not proof of an external XMR/token payment.
+
+See `BOUNTIES.md` for repository-specific scope.
+
+## Security and privacy
+
+- Never store wallet seed phrases/private keys in AsyncStorage or source control.
+- Treat authentication tokens as secrets.
+- Do not represent testnet/simulation state as production settlement.
+- Verify Tor/proxy behavior rather than inferring it from an installed/running app.
 
 ## Related projects
 
+- [myzubster](https://github.com/MyZubster-Ecosystem/myzubster)
 - [MyZubster Gateway](https://github.com/MyZubster-Ecosystem/MyZubsterGateway)
 - [MyZubster Marketplace](https://github.com/MyZubster-Ecosystem/MyZubster-Marketplace)
+- [myzubster-docs](https://github.com/MyZubster-Ecosystem/myzubster-docs)
 
----
+## Transparency
 
-## 🔍 Project Status (Real)
-
-| Feature | Status | Note |
-|---------|--------|------|
-| Robot DNA Schema | ✅ Complete | Production ready |
-| x402 Micropayments | 🔄 In Progress | Testnet only |
-| Monero Escrow | 🔄 In Progress | Testnet only |
-| Self-Replication | 🧪 Simulation | Software simulation only |
-| FCMP++ Integration | 🔄 In Progress | `FCMP_ENABLED=false` |
-| Geolocation | 🔄 In Progress | 50-100m accuracy |
-| Animal Registry | ✅ Complete | Production ready |
-
-## 🤖 Transparency Note
-
-This project uses automation (bots) to help manage issues, PRs, and bounties. All automated actions are reviewed by human maintainers before final decisions are made.
-
-- **Bot account:** @myzubster-bot (coming soon)
-- **Automated tasks:** Issue triage, PR validation, bounty tracking
-- **Human review:** Every PR is reviewed by at least one maintainer
-
-## ⚠️ Known Limitations
-
-- FCMP++ is currently disabled (`FCMP_ENABLED=false`)
-- x402 features are on testnet only
-- Self-replication is software simulation, not hardware
-- Geolocation accuracy is 50-100m (improvement planned)
-
+Automation may assist with issue/PR/bounty workflows, but sensitive changes, bounty verification and settlement decisions require appropriate human/independent review.
