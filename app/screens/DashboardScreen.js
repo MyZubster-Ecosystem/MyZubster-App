@@ -40,7 +40,12 @@ export default function DashboardScreen({ navigation }) {
       <View style={styles.headerText}><Text style={styles.welcome}>{t('dashboard.welcome', { name: user?.name || user?.email || 'Utente' })}</Text><Text style={styles.subtle}>{orbot?.trafficTunneled ? '🧅 Tor attivo' : orbot?.requested ? '🧅 Orbot avviato (proxy non attivo)' : 'Privacy non configurata'}</Text></View>
       <TouchableOpacity onPress={logout}><Text style={styles.logout}>Esci</Text></TouchableOpacity>
     </View>
+    <View style={styles.betaBanner}>
+      <View style={styles.betaCopy}><Text style={styles.betaEyebrow}>BETA</Text><Text style={styles.betaTitle}>MyZubster Lavori</Text><Text style={styles.betaText}>Bounty, attività reali e candidature in un'unica schermata.</Text></View>
+      <TouchableOpacity style={styles.betaButton} onPress={() => navigation.navigate('JobsBeta')}><Text style={styles.betaButtonText}>APRI</Text></TouchableOpacity>
+    </View>
     <View style={styles.quickActions}>
+      <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('JobsBeta')}><Text style={styles.actionEmoji}>🧰</Text><Text>Lavori Beta</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Wallet')}><Text style={styles.actionEmoji}>💰</Text><Text>Wallet</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('Privacy')}><Text style={styles.actionEmoji}>🧅</Text><Text>Privacy</Text></TouchableOpacity>
       <TouchableOpacity style={styles.action} onPress={() => navigation.navigate('CreateOrder')}><Text style={styles.actionEmoji}>📦</Text><Text>Nuovo ordine</Text></TouchableOpacity>
@@ -80,6 +85,8 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
   headerText: { flex: 1 }, welcome: { fontSize: 20, fontWeight: '700' }, subtle: { color: '#777', marginTop: 4 }, logout: { color: '#c62828', fontWeight: '600' },
+  betaBanner: { backgroundColor: '#0b1220', borderRadius: 14, padding: 14, marginBottom: 14, flexDirection: 'row', alignItems: 'center' },
+  betaCopy: { flex: 1, paddingRight: 10 }, betaEyebrow: { color: '#5eead4', fontSize: 11, fontWeight: '900', letterSpacing: 1.5 }, betaTitle: { color: 'white', fontSize: 18, fontWeight: '900', marginTop: 2 }, betaText: { color: '#a8b3c7', marginTop: 4, fontSize: 12 }, betaButton: { backgroundColor: '#14b8a6', borderRadius: 9, paddingHorizontal: 14, paddingVertical: 10 }, betaButtonText: { color: '#06131a', fontWeight: '900' },
   quickActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 10 }, action: { width: '30%', backgroundColor: 'white', borderRadius: 10, padding: 12, alignItems: 'center' }, actionEmoji: { fontSize: 24, marginBottom: 4 },
   torButton: { borderWidth: 1, borderColor: '#7B2FBE', borderRadius: 8, padding: 10, alignItems: 'center', marginBottom: 18 }, torText: { color: '#7B2FBE', fontWeight: '700' },
   titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, sectionTitle: { fontSize: 18, fontWeight: '700', marginBottom: 10 }, refresh: { color: '#1976D2' }, list: { paddingBottom: 20 },
