@@ -27,7 +27,50 @@
 | **MyZubster-Robot** | [#111](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/111) | [x402+Escrow] Flusso di pagamento automatizzato (#86) | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#81](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/81) | [Auto-Config] Robot che configura robot figli | Bounty | 🔄 In revisione |
 | **MyZubster-Robot** | [#85](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/85) | [Energy Independence] Robot che si ricarica autonomamente | Bounty | 🔄 In revisione |
-| **MyZubster-Robot** | [#114](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/114) | [x402 Multisig] Escrow con Monero multisig reale (#93) | Bounty | 🔄 In revisione |
-| **myzubster** | [#62](https://github.com/MyZubster-Ecosystem/myzubster/issues/62) | [Issue] Da definire | Bounty | ✅ Assegnata |
-| **MyZubster-Robot** | [#70](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/70) | [Robot] Tagliaerba modulare sotto 200€ | Bounty | 🔄 In revisione |
-| **MyZubster-Robot** | [#73](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/73) | [Robot] Auto-replicazione: robot che costruisce copie di sé | Bounty | 🔄 In revisione |
+| **MyZubster-Robot** | [#114](https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/114) | [x402 Multisig] Escrow con Monero multisig reale (#93) | Boun
+
+---
+
+## 🆔 MyZubster Digital Identity Template
+
+All contributors are invited to add their **voluntary MyZubster Digital Identity** below for contribution provenance and collaboration.
+
+> **Not KYC, SPID/CIE, a government identity, or a qualified electronic signature.** Never publish private keys, seed phrases, credentials, private addresses or unnecessary personal data. A public alias is enough.
+
+### Template
+
+```text
+IDENTITY
+GitHub alias: @your-handle
+Public display name/alias: <optional>
+Main contributions: <issue/PR links>
+Public profile links: <optional>
+```
+
+### Example Entry
+
+```text
+IDENTITY
+GitHub alias: @your-github-handle
+Public display name/alias: Your Display Name
+Main contributions: https://github.com/MyZubster-Ecosystem/MyZubster-App/pull/123, https://github.com/MyZubster-Ecosystem/MyZubster-App/issues/456
+Public profile links: https://your-website.example, https://linkedin.com/in/your-profile
+```
+
+### Contributor Identities
+
+<!-- Add your identity below this line -->
+
+```text
+IDENTITY
+GitHub alias: @OMNIbeep
+Public display name/alias: OMNIbeep
+Main contributions: https://github.com/MyZubster-Ecosystem/MyZubster-Robot/issues/88, https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/98, https://github.com/MyZubster-Ecosystem/MyZubster-Robot/pull/100, https://github.com/MyZubster-Ecosystem/MyZubsterGateway/pull/221
+Public profile links: 
+```
+
+---
+
+*Canonical invitation: https://github.com/MyZubster-Ecosystem/myzubster/issues/607*
+
+*Identity verification remains separate from bounty approval, reward accounting and external settlement.*
