@@ -25,6 +25,7 @@ jobs:
         run: |
           npm install expo@^52.0.0 --ignore-scripts
           npx expo install --fix
+          npx expo install expo-asset
 
       - name: Expo doctor evidence
         continue-on-error: true
@@ -36,11 +37,16 @@ jobs:
       - name: Export Android bundle
         run: npx expo export -p android
 
-      - name: Audit and dependency evidence
+      - name: Exact dependency tree
+        if: always()
+        run: |
+          npm ls --all > full-dependency-tree.txt
+          npm ls expo expo-asset react react-native jest-expo react-test-renderer metro @expo/plist @xmldom/xmldom image-size --all > dependency-tree.txt
+
+      - name: Audit evidence
         if: always()
         run: |
           npm audit --json > npm-audit.json || true
-          npm ls expo react react-native metro @expo/plist @xmldom/xmldom image-size --all > dependency-tree.txt || true
           node - <<'NODE'
           const fs=require('fs');
           const a=JSON.parse(fs.readFileSync('npm-audit.json','utf8'));
@@ -57,6 +63,7 @@ jobs:
             package-lock.json
             npm-audit.json
             dependency-tree.txt
+            full-dependency-tree.txt
             expo-doctor.txt
           if-no-files-found: warn
           retention-days: 14
