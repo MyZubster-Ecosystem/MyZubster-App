@@ -1,0 +1,53 @@
+name: Security App HIGH Transitive Remediation
+
+on:
+  push:
+    branches: [security/app-high-transitive-remediation]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: security/app-high-transitive-remediation
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Regenerate exact lockfile
+        run: npm install --package-lock-only --ignore-scripts
+      - name: Install exact tree
+        run: npm ci --ignore-scripts
+      - name: Jest
+        run: npm test -- --runInBand --watchAll=false
+      - name: Audit and dependency evidence
+        run: |
+          npm audit --json > npm-audit.json || true
+          npm ls @xmldom/xmldom nanoid postcss image-size expo react-native metro --all || true
+          node - <<'NODE'
+          const fs=require('fs');
+          const a=JSON.parse(fs.readFileSync('npm-audit.json','utf8'));
+          console.log('VULNERABILITIES', a.metadata?.vulnerabilities || {});
+          NODE
+      - name: Persist lockfile if changed
+        run: |
+          if ! git diff --quiet package-lock.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add package-lock.json
+            git commit -m "security: refresh App lockfile for HIGH remediation"
+            git push
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: app-high-transitive-remediation-evidence
+          path: |
+            package-lock.json
+            npm-audit.json
