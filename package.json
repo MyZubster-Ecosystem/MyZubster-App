@@ -46,7 +46,10 @@
   "overrides": {
     "tar": "7.5.22",
     "nanoid": "3.3.18",
-    "postcss": "8.5.26"
+    "postcss": "8.5.26",
+    "@expo/plist": {
+      "@xmldom/xmldom": "0.8.15"
+    }
   },
   "private": true
 }
