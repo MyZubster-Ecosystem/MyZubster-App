@@ -1,0 +1,55 @@
+name: Security Expo SDK 52 Migration Experiment
+
+on:
+  push:
+    branches:
+      - security/app-expo-sdk52-migration
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.20.2'
+          cache: npm
+
+      - name: Upgrade one SDK step and align dependencies
+        run: |
+          npm install expo@^52.0.0 --ignore-scripts
+          npx expo install --fix --non-interactive
+
+      - name: Expo doctor
+        run: npx expo-doctor
+
+      - name: Jest
+        run: npm test -- --runInBand --watchAll=false
+
+      - name: Export Android bundle
+        run: npx expo export -p android
+
+      - name: Audit and dependency evidence
+        run: |
+          npm audit --json > npm-audit.json || true
+          npm ls expo react react-native metro @expo/plist @xmldom/xmldom image-size --all > dependency-tree.txt || true
+          node - <<'NODE'
+          const fs=require('fs');
+          const a=JSON.parse(fs.readFileSync('npm-audit.json','utf8'));
+          console.log('VULNERABILITIES', a.metadata?.vulnerabilities || {});
+          NODE
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-expo-sdk52-migration-evidence
+          path: |
+            package.json
+            package-lock.json
+            npm-audit.json
+            dependency-tree.txt
+          retention-days: 14
