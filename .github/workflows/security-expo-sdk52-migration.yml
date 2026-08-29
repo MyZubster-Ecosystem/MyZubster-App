@@ -12,6 +12,8 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      CI: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,10 +24,10 @@ jobs:
       - name: Upgrade one SDK step and align dependencies
         run: |
           npm install expo@^52.0.0 --ignore-scripts
-          npx expo install --fix --non-interactive
+          npx expo install --fix
 
       - name: Expo doctor
-        run: npx expo-doctor
+        run: npx expo-doctor@latest
 
       - name: Jest
         run: npm test -- --runInBand --watchAll=false
@@ -44,6 +46,7 @@ jobs:
           NODE
 
       - name: Upload evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: app-expo-sdk52-migration-evidence
@@ -52,4 +55,5 @@ jobs:
             package-lock.json
             npm-audit.json
             dependency-tree.txt
+          if-no-files-found: warn
           retention-days: 14
