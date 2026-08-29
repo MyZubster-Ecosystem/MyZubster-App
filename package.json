@@ -45,7 +45,6 @@
   },
   "overrides": {
     "tar": "7.5.22",
-    "@xmldom/xmldom": "0.8.15",
     "nanoid": "3.3.18",
     "postcss": "8.5.26"
   },
