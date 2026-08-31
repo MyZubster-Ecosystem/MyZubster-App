@@ -47,17 +47,20 @@ function AppNavigator() {
   }
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      initialRouteName={user ? 'JobsBeta' : 'Login'}
+      screenOptions={{ headerBackTitle: 'Indietro' }}
+    >
       {!user ? (
         <>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="AnonymousLogin" component={AnonymousLoginScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="AnonymousLogin" component={AnonymousLoginScreen} options={{ title: 'Accesso avanzato' }} />
         </>
       ) : (
         <>
-          <Stack.Screen name="Dashboard" component={DashboardScreen} />
-          <Stack.Screen name="JobsBeta" component={JobsBetaScreen} options={{ title: 'MyZubster Beta · Lavori' }} />
+          <Stack.Screen name="JobsBeta" component={JobsBetaScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} options={{ title: 'Tutte le funzioni' }} />
           <Stack.Screen name="CreateOrder" component={CreateOrderScreen} />
           <Stack.Screen name="Order" component={OrderScreen} />
           <Stack.Screen name="Wallet" component={WalletScreen} />
