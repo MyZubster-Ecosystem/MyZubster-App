@@ -159,11 +159,11 @@ export default function JobsBetaScreen({ navigation }) {
       </View>
       <Text style={styles.jobTitle}>{item.title}</Text>
       <View style={styles.skillBox}>
-        <Text style={styles.skillLabel}>Puoi ricevere aiuto con</Text>
+        <Text style={styles.skillLabel}>Competenza offerta</Text>
         <Text style={styles.skillValue}>{item.offeredSkill}</Text>
       </View>
       <View style={styles.skillBox}>
-        <Text style={styles.skillLabel}>In cambio cerca aiuto con</Text>
+        <Text style={styles.skillLabel}>Aiuto cercato</Text>
         <Text style={styles.skillValue}>{item.requestedSkill}</Text>
       </View>
       {!!item.location && <Text style={styles.meta}>Luogo: {item.location}</Text>}
@@ -231,7 +231,7 @@ export default function JobsBetaScreen({ navigation }) {
                       onPress={() => runAction(key, () => acceptSkillExchangeApplication(id, applicationId), 'Match creato', 'Entrambe le persone devono confermare l’inizio.')}
                       style={[styles.secondaryAction, busy[key] && styles.applyDisabled]}
                     >
-                      <Text style={styles.secondaryActionText}>{busy[key] ? 'ACCETTO…' : 'SCEGLI QUESTA PERSONA'}</Text>
+                      <Text style={styles.secondaryActionText}>{busy[key] ? 'Scelta in corso…' : 'Scegli questa persona'}</Text>
                     </Pressable>
                   )}
                 </View>
@@ -249,7 +249,7 @@ export default function JobsBetaScreen({ navigation }) {
               onPress={() => runAction(`start:${id}`, () => confirmSkillExchangeStart(id), 'Conferma registrata', 'Lo scambio parte quando confermano entrambe le persone.')}
               style={[styles.apply, (startConfirmed || busy[`start:${id}`]) && styles.applyDisabled]}
             >
-              <Text style={styles.applyText}>{startConfirmed ? 'TU HAI CONFERMATO · ATTESA ALTRA PERSONA' : 'CONFERMO CHE INIZIAMO'}</Text>
+              <Text style={styles.applyText}>{startConfirmed ? 'Hai confermato · in attesa dell’altra persona' : 'Confermo l’inizio'}</Text>
             </Pressable>
           </View>
         )}
@@ -263,7 +263,7 @@ export default function JobsBetaScreen({ navigation }) {
               onPress={() => runAction(`complete:${id}`, () => confirmSkillExchangeCompletion(id), 'Conferma registrata', 'Lo scambio si completa quando confermano entrambe le persone.')}
               style={[styles.apply, (completionConfirmed || busy[`complete:${id}`]) && styles.applyDisabled]}
             >
-              <Text style={styles.applyText}>{completionConfirmed ? 'TU HAI CONFERMATO · ATTESA ALTRA PERSONA' : 'CONFERMO CHE È COMPLETATA'}</Text>
+              <Text style={styles.applyText}>{completionConfirmed ? 'Hai confermato · in attesa dell’altra persona' : 'Confermo il completamento'}</Text>
             </Pressable>
           </View>
         )}
@@ -287,7 +287,7 @@ export default function JobsBetaScreen({ navigation }) {
                   onPress={() => runAction(`review:${id}`, () => reviewSkillExchange(id, Number(ratings[id] || 5), reviewComments[id] || ''), 'Recensione inviata', 'Grazie per il feedback sullo scambio.')}
                   style={[styles.apply, busy[`review:${id}`] && styles.applyDisabled]}
                 >
-                  <Text style={styles.applyText}>{busy[`review:${id}`] ? 'INVIO…' : 'INVIA VALUTAZIONE'}</Text>
+                  <Text style={styles.applyText}>{busy[`review:${id}`] ? 'Invio…' : 'Invia valutazione'}</Text>
                 </Pressable>
               </>
             )}
