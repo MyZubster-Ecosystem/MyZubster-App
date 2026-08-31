@@ -40,11 +40,12 @@ export function AuthProvider({ children }) {
     return () => { mounted = false; };
   }, []);
 
-  const login = async (email, password) => {
-    const response = await api.post('/auth/login', { email: email.trim(), password });
+  const persistSession = async response => {
     const nextToken = response.data?.token || response.data?.data?.token;
     const nextUser = response.data?.user || response.data?.data?.user;
-    if (!nextToken || !nextUser) throw new Error('Login response is missing token or user');
+    if (!nextToken || !nextUser) {
+      throw new Error(response.data?.message || response.data?.error || 'Authentication response is missing token or user');
+    }
 
     setToken(nextToken);
     setUser(nextUser);
@@ -56,13 +57,18 @@ export function AuthProvider({ children }) {
     return nextUser;
   };
 
+  const login = async (email, password) => {
+    const response = await api.post('/auth/login', { email: email.trim(), password });
+    return persistSession(response);
+  };
+
   const register = async (email, password, name) => {
     const response = await api.post('/auth/register', {
       username: name.trim(),
       email: email.trim(),
       password,
     });
-    return response.data;
+    return persistSession(response);
   };
 
   const logout = async () => {
