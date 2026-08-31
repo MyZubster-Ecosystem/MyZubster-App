@@ -12,6 +12,10 @@ export async function listSkillExchangeOffers(filters = {}) {
   return unwrap(await api.get(`${BASE}/offers`, { params })).offers || [];
 }
 
+export async function listMySkillExchanges() {
+  return unwrap(await api.get(`${BASE}/mine`)).offers || [];
+}
+
 export async function createSkillExchangeOffer(payload) {
   return unwrap(await api.post(`${BASE}/offers`, payload)).offer;
 }
