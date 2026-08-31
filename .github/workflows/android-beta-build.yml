@@ -69,21 +69,21 @@ jobs:
             echo "Release APK not found" >&2
             exit 1
           fi
-          cp "$APK" MyZubster-Lavori-Standalone-v1.0.1.apk
+          cp "$APK" MyZubster-Lavori-Standalone-v1.0.2.apk
           APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
           if [ -z "$APKSIGNER" ]; then
             echo "apksigner not found" >&2
             exit 1
           fi
-          "$APKSIGNER" verify MyZubster-Lavori-Standalone-v1.0.1.apk
-          sha256sum MyZubster-Lavori-Standalone-v1.0.1.apk | tee MYZUBSTER-LAVORI-SHA256.txt
+          "$APKSIGNER" verify MyZubster-Lavori-Standalone-v1.0.2.apk
+          sha256sum MyZubster-Lavori-Standalone-v1.0.2.apk | tee MYZUBSTER-LAVORI-SHA256.txt
 
       - name: Upload standalone Lavori APK
         uses: actions/upload-artifact@v4
         with:
-          name: myzubster-lavori-standalone-v1.0.1
+          name: myzubster-lavori-standalone-v1.0.2
           path: |
-            MyZubster-Lavori-Standalone-v1.0.1.apk
+            MyZubster-Lavori-Standalone-v1.0.2.apk
             MYZUBSTER-LAVORI-SHA256.txt
           if-no-files-found: error
           retention-days: 30
@@ -98,18 +98,20 @@ jobs:
       - name: Download verified APK artifact
         uses: actions/download-artifact@v4
         with:
-          name: myzubster-lavori-standalone-v1.0.1
+          name: myzubster-lavori-standalone-v1.0.2
           path: release-assets
 
       - name: Publish GitHub prerelease
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: lavori-standalone-v1.0.1
+          TAG: lavori-standalone-v1.0.2
         shell: bash
         run: |
           set -euo pipefail
           cat > release-notes.md <<'EOF'
-          MyZubster Lavori standalone Android build connected to the MyZubster production API.
+          MyZubster Lavori standalone Android v1.0.2 connected to the MyZubster production API.
+
+          Fixes the Lavori screen so the complete page, including the publish form, can scroll on smaller Android displays and while the keyboard is open.
 
           Included flow: registration/login, publish skill exchange, apply, owner acceptance, bilateral start confirmation, bilateral completion confirmation and participant review.
 
@@ -118,15 +120,15 @@ jobs:
 
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$TAG" \
-              release-assets/MyZubster-Lavori-Standalone-v1.0.1.apk \
+              release-assets/MyZubster-Lavori-Standalone-v1.0.2.apk \
               release-assets/MYZUBSTER-LAVORI-SHA256.txt \
               --clobber --repo "$GITHUB_REPOSITORY"
           else
             gh release create "$TAG" \
-              release-assets/MyZubster-Lavori-Standalone-v1.0.1.apk \
+              release-assets/MyZubster-Lavori-Standalone-v1.0.2.apk \
               release-assets/MYZUBSTER-LAVORI-SHA256.txt \
               --target "$GITHUB_SHA" \
-              --title "MyZubster Lavori Standalone v1.0.1" \
+              --title "MyZubster Lavori Standalone v1.0.2" \
               --notes-file release-notes.md \
               --prerelease \
               --repo "$GITHUB_REPOSITORY"
