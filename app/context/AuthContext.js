@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const response = await api.post('/auth/login', { email: email.trim(), password });
-    const nextToken = response.data?.token;
+    const nextToken = response.data?.token || response.data?.data?.token;
     const nextUser = response.data?.user || response.data?.data?.user;
     if (!nextToken || !nextUser) throw new Error('Login response is missing token or user');
 
@@ -58,9 +58,9 @@ export function AuthProvider({ children }) {
 
   const register = async (email, password, name) => {
     const response = await api.post('/auth/register', {
+      username: name.trim(),
       email: email.trim(),
       password,
-      name: name.trim(),
     });
     return response.data;
   };
