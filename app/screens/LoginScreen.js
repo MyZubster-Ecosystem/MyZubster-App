@@ -9,7 +9,7 @@ export default function LoginScreen({ navigation }) {
   const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
-    if (!email || !password) {
+    if (!email.trim() || !password) {
       Alert.alert('❌ Errore', 'Inserisci email e password.');
       return;
     }
@@ -18,7 +18,10 @@ export default function LoginScreen({ navigation }) {
     try {
       await login(email, password);
     } catch (error) {
-      Alert.alert('❌ Login fallito', error.message || 'Credenziali non valide.');
+      Alert.alert(
+        '❌ Login fallito',
+        error.response?.data?.message || error.response?.data?.error || error.message || 'Credenziali non valide.',
+      );
     } finally {
       setLoading(false);
     }

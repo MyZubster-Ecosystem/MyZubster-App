@@ -28,6 +28,7 @@ import CityMapScreen from './app/screens/CityMapScreen';
 import WasteReportScreen from './app/screens/WasteReportScreen';
 import AIReportsDashboardScreen from './app/screens/AIReportsDashboardScreen';
 import DroneKitScreen from './app/screens/DroneKitScreen';
+import JobsBetaScreen from './app/screens/JobsBetaScreen';
 import { initPrivacyPreferences } from './app/services/privacyService';
 import NotificationManager from './app/components/NotificationManager';
 import { navigationRef } from './app/navigation/navigationRef';
@@ -56,6 +57,7 @@ function AppNavigator() {
       ) : (
         <>
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="JobsBeta" component={JobsBetaScreen} options={{ title: 'MyZubster Beta · Lavori' }} />
           <Stack.Screen name="CreateOrder" component={CreateOrderScreen} />
           <Stack.Screen name="Order" component={OrderScreen} />
           <Stack.Screen name="Wallet" component={WalletScreen} />
