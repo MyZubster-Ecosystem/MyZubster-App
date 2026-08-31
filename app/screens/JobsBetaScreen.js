@@ -64,8 +64,7 @@ export default function JobsBetaScreen() {
   const loadDiscover = useCallback(async ({ silent = false } = {}) => {
     setLoadingDiscover(true);
     try {
-      const next = await listSkillExchangeOffers({ status: 'open' });
-      setOffers(next);
+      setOffers(await listSkillExchangeOffers({ status: 'open' }));
     } catch (error) {
       if (!silent) Alert.alert('Servizio non disponibile', errorMessage(error, 'Impossibile caricare gli scambi di competenze.'));
     } finally {
@@ -76,8 +75,7 @@ export default function JobsBetaScreen() {
   const loadMine = useCallback(async ({ silent = false } = {}) => {
     setLoadingMine(true);
     try {
-      const next = await listMySkillExchanges();
-      setMyOffers(next);
+      setMyOffers(await listMySkillExchanges());
     } catch (error) {
       if (!silent) Alert.alert('I miei scambi', errorMessage(error, 'Impossibile caricare i tuoi scambi.'));
     } finally {
@@ -122,6 +120,19 @@ export default function JobsBetaScreen() {
     }
   };
 
+  const publish = async () => {
+    if (!draft.title.trim() || !draft.description.trim() || !draft.offeredSkill.trim() || !draft.requestedSkill.trim()) {
+      Alert.alert('Campi mancanti', 'Titolo, descrizione, competenza offerta e competenza cercata sono obbligatori.');
+      return;
+    }
+    await runAction('publish', async () => {
+      await createSkillExchangeOffer(draft);
+      setDraft({ title: '', description: '', offeredSkill: '', requestedSkill: '', location: '', mode: 'remote' });
+      setShowCreate(false);
+      setTab('mine');
+    }, 'Offerta pubblicata', 'Lo scambio è aperto alle candidature.');
+  };
+
   const apply = async offer => {
     const id = String(offer._id || offer.id);
     if (String(offer.ownerId) === userId) return;
@@ -133,64 +144,7 @@ export default function JobsBetaScreen() {
     );
   };
 
-  const publish = async () => {
-    if (!draft.title.trim() || !draft.description.trim() || !draft.offeredSkill.trim() || !draft.requestedSkill.trim()) {
-      Alert.alert('Campi mancanti', 'Titolo, descrizione, competenza offerta e competenza cercata sono obbligatori.');
-      return;
-    }
-
-    await runAction(
-      'publish',
-      async () => {
-        await createSkillExchangeOffer(draft);
-        setDraft({ title: '', description: '', offeredSkill: '', requestedSkill: '', location: '', mode: 'remote' });
-        setShowCreate(false);
-        setTab('mine');
-      },
-      'Offerta pubblicata',
-      'Lo scambio è aperto alle candidature.',
-    );
-  };
-
-  const acceptApplication = async (offerId, applicationId) => {
-    await runAction(
-      `accept:${offerId}:${applicationId}`,
-      () => acceptSkillExchangeApplication(offerId, applicationId),
-      'Match creato',
-      'La candidatura è stata accettata. Entrambe le persone devono confermare l’inizio.',
-    );
-  };
-
-  const confirmStart = async offerId => {
-    await runAction(
-      `start:${offerId}`,
-      () => confirmSkillExchangeStart(offerId),
-      'Conferma registrata',
-      'Lo scambio diventa “In corso” quando confermano entrambe le persone.',
-    );
-  };
-
-  const confirmCompletion = async offerId => {
-    await runAction(
-      `complete:${offerId}`,
-      () => confirmSkillExchangeCompletion(offerId),
-      'Conferma registrata',
-      'Lo scambio diventa “Completato” quando confermano entrambe le persone.',
-    );
-  };
-
-  const submitReview = async offerId => {
-    const rating = Number(ratings[offerId] || 5);
-    const comment = reviewComments[offerId] || '';
-    await runAction(
-      `review:${offerId}`,
-      () => reviewSkillExchange(offerId, rating, comment),
-      'Recensione inviata',
-      'Grazie per il feedback sullo scambio.',
-    );
-  };
-
-  const renderBaseCard = item => (
+  const baseCard = item => (
     <>
       <View style={styles.row}>
         <Text style={styles.badge}>{String(item.mode || 'remote').toUpperCase()}</Text>
@@ -210,10 +164,9 @@ export default function JobsBetaScreen() {
     const own = String(item.ownerId) === userId;
     const alreadyApplied = appliedOfferIds.has(id);
     const actionBusy = busy[`apply:${id}`];
-
     return (
       <View style={styles.card}>
-        {renderBaseCard(item)}
+        {baseCard(item)}
         {own ? (
           <View style={styles.infoPill}><Text style={styles.infoPillText}>È una tua offerta</Text></View>
         ) : (
@@ -233,41 +186,39 @@ export default function JobsBetaScreen() {
     const startConfirmed = (item.startConfirmedBy || []).map(String).includes(userId);
     const completionConfirmed = (item.completionConfirmedBy || []).map(String).includes(userId);
     const myReview = (item.reviews || []).find(review => String(review.reviewerId) === userId);
-    const pendingApplications = (item.applications || []).filter(application => application.status === 'pending');
 
     return (
       <View style={styles.card}>
-        {renderBaseCard(item)}
+        {baseCard(item)}
         <Text style={styles.role}>{isOwner ? 'RUOLO: HAI PUBBLICATO TU' : isParticipant ? 'RUOLO: PARTECIPANTE SELEZIONATO' : 'RUOLO: CANDIDATO'}</Text>
 
         {!!myApplication && !isOwner && (
-          <View style={styles.infoPill}>
-            <Text style={styles.infoPillText}>Candidatura: {APPLICATION_LABELS[myApplication.status] || myApplication.status}</Text>
-          </View>
+          <View style={styles.infoPill}><Text style={styles.infoPillText}>Candidatura: {APPLICATION_LABELS[myApplication.status] || myApplication.status}</Text></View>
         )}
 
         {isOwner && item.status === 'open' && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Candidature ({(item.applications || []).length})</Text>
-            {(item.applications || []).length === 0 ? (
-              <Text style={styles.muted}>Nessuna candidatura ricevuta.</Text>
-            ) : (item.applications || []).map(application => {
+            {(item.applications || []).length === 0 ? <Text style={styles.muted}>Nessuna candidatura ricevuta.</Text> : (item.applications || []).map(application => {
               const applicationId = String(application._id || application.id);
-              const acceptKey = `accept:${id}:${applicationId}`;
+              const key = `accept:${id}:${applicationId}`;
               return (
                 <View key={applicationId} style={styles.applicationCard}>
                   <Text style={styles.applicationTitle}>Candidato {String(application.applicantId).slice(-6)}</Text>
                   {!!application.message && <Text style={styles.muted}>{application.message}</Text>}
                   <Text style={styles.applicationStatus}>{APPLICATION_LABELS[application.status] || application.status}</Text>
                   {application.status === 'pending' && (
-                    <Pressable disabled={busy[acceptKey]} onPress={() => acceptApplication(id, applicationId)} style={[styles.secondaryAction, busy[acceptKey] && styles.applyDisabled]}>
-                      <Text style={styles.secondaryActionText}>{busy[acceptKey] ? 'ACCETTO…' : 'ACCETTA CANDIDATURA'}</Text>
+                    <Pressable
+                      disabled={busy[key]}
+                      onPress={() => runAction(key, () => acceptSkillExchangeApplication(id, applicationId), 'Match creato', 'Entrambe le persone devono confermare l’inizio.')}
+                      style={[styles.secondaryAction, busy[key] && styles.applyDisabled]}
+                    >
+                      <Text style={styles.secondaryActionText}>{busy[key] ? 'ACCETTO…' : 'ACCETTA CANDIDATURA'}</Text>
                     </Pressable>
                   )}
                 </View>
               );
             })}
-            {pendingApplications.length > 1 && <Text style={styles.muted}>Accettandone una, le altre candidature pendenti vengono chiuse automaticamente.</Text>}
           </View>
         )}
 
@@ -275,8 +226,12 @@ export default function JobsBetaScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Avvio dello scambio</Text>
             <Text style={styles.muted}>Servono due conferme indipendenti.</Text>
-            <Pressable disabled={startConfirmed || busy[`start:${id}`]} onPress={() => confirmStart(id)} style={[styles.apply, (startConfirmed || busy[`start:${id}`]) && styles.applyDisabled]}>
-              <Text style={styles.applyText}>{busy[`start:${id}`] ? 'CONFERMO…' : startConfirmed ? 'TU HAI CONFERMATO · ATTESA ALTRA PERSONA' : 'CONFERMA INIZIO'}</Text>
+            <Pressable
+              disabled={startConfirmed || busy[`start:${id}`]}
+              onPress={() => runAction(`start:${id}`, () => confirmSkillExchangeStart(id), 'Conferma registrata', 'Lo scambio parte quando confermano entrambe le persone.')}
+              style={[styles.apply, (startConfirmed || busy[`start:${id}`]) && styles.applyDisabled]}
+            >
+              <Text style={styles.applyText}>{startConfirmed ? 'TU HAI CONFERMATO · ATTESA ALTRA PERSONA' : 'CONFERMA INIZIO'}</Text>
             </Pressable>
           </View>
         )}
@@ -285,8 +240,12 @@ export default function JobsBetaScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Scambio in corso</Text>
             <Text style={styles.muted}>Quando il lavoro è davvero concluso, conferma il completamento.</Text>
-            <Pressable disabled={completionConfirmed || busy[`complete:${id}`]} onPress={() => confirmCompletion(id)} style={[styles.apply, (completionConfirmed || busy[`complete:${id}`]) && styles.applyDisabled]}>
-              <Text style={styles.applyText}>{busy[`complete:${id}`] ? 'CONFERMO…' : completionConfirmed ? 'TU HAI CONFERMATO · ATTESA ALTRA PERSONA' : 'CONFERMA COMPLETAMENTO'}</Text>
+            <Pressable
+              disabled={completionConfirmed || busy[`complete:${id}`]}
+              onPress={() => runAction(`complete:${id}`, () => confirmSkillExchangeCompletion(id), 'Conferma registrata', 'Lo scambio si completa quando confermano entrambe le persone.')}
+              style={[styles.apply, (completionConfirmed || busy[`complete:${id}`]) && styles.applyDisabled]}
+            >
+              <Text style={styles.applyText}>{completionConfirmed ? 'TU HAI CONFERMATO · ATTESA ALTRA PERSONA' : 'CONFERMA COMPLETAMENTO'}</Text>
             </Pressable>
           </View>
         )}
@@ -294,9 +253,7 @@ export default function JobsBetaScreen() {
         {isParticipant && item.status === 'completed' && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Scambio completato</Text>
-            {myReview ? (
-              <Text style={styles.reviewDone}>Hai lasciato {myReview.rating}/5 ★</Text>
-            ) : (
+            {myReview ? <Text style={styles.reviewDone}>Hai lasciato {myReview.rating}/5 ★</Text> : (
               <>
                 <Text style={styles.muted}>Valuta l’esperienza.</Text>
                 <View style={styles.ratingRow}>
@@ -306,14 +263,12 @@ export default function JobsBetaScreen() {
                     </Pressable>
                   ))}
                 </View>
-                <TextInput
-                  value={reviewComments[id] || ''}
-                  onChangeText={comment => setReviewComments(current => ({ ...current, [id]: comment }))}
-                  placeholder="Commento opzionale"
-                  placeholderTextColor="#64748b"
-                  style={styles.input}
-                />
-                <Pressable disabled={busy[`review:${id}`]} onPress={() => submitReview(id)} style={[styles.apply, busy[`review:${id}`] && styles.applyDisabled]}>
+                <TextInput value={reviewComments[id] || ''} onChangeText={comment => setReviewComments(current => ({ ...current, [id]: comment }))} placeholder="Commento opzionale" placeholderTextColor="#64748b" style={styles.input} />
+                <Pressable
+                  disabled={busy[`review:${id}`]}
+                  onPress={() => runAction(`review:${id}`, () => reviewSkillExchange(id, Number(ratings[id] || 5), reviewComments[id] || ''), 'Recensione inviata', 'Grazie per il feedback sullo scambio.')}
+                  style={[styles.apply, busy[`review:${id}`] && styles.applyDisabled]}
+                >
                   <Text style={styles.applyText}>{busy[`review:${id}`] ? 'INVIO…' : 'INVIA RECENSIONE'}</Text>
                 </Pressable>
               </>
@@ -324,8 +279,8 @@ export default function JobsBetaScreen() {
     );
   };
 
-  return (
-    <View style={styles.container}>
+  const header = (
+    <View>
       <Text style={styles.eyebrow}>MYZUBSTER</Text>
       <Text style={styles.title}>Lavori & Scambio competenze</Text>
       <Text style={styles.subtitle}>Pubblica, candidati, crea il match, conferma insieme inizio e completamento e lascia una recensione. Le azioni restano separate da pagamenti e contratti automatici.</Text>
@@ -363,7 +318,7 @@ export default function JobsBetaScreen() {
         </View>
       )}
 
-      {tab === 'discover' ? (
+      {tab === 'discover' && (
         <>
           <TextInput value={query} onChangeText={setQuery} placeholder="Cerca competenza o luogo" placeholderTextColor="#64748b" style={styles.search} />
           <View style={styles.filters}>
@@ -373,31 +328,34 @@ export default function JobsBetaScreen() {
               </Pressable>
             ))}
           </View>
-          <FlatList
-            data={visible}
-            keyExtractor={item => String(item._id || item.id)}
-            refreshControl={<RefreshControl refreshing={loadingDiscover} onRefresh={() => refreshAll({ silent: false })} />}
-            contentContainerStyle={styles.list}
-            ListEmptyComponent={<Text style={styles.empty}>{loadingDiscover ? 'Caricamento…' : 'Nessuno scambio aperto.'}</Text>}
-            renderItem={renderDiscoverItem}
-          />
         </>
-      ) : (
-        <FlatList
-          data={myOffers}
-          keyExtractor={item => String(item._id || item.id)}
-          refreshControl={<RefreshControl refreshing={loadingMine} onRefresh={() => refreshAll({ silent: false })} />}
-          contentContainerStyle={styles.list}
-          ListEmptyComponent={<Text style={styles.empty}>{loadingMine ? 'Caricamento…' : 'Non hai ancora scambi o candidature.'}</Text>}
-          renderItem={renderMyItem}
-        />
       )}
     </View>
+  );
+
+  const data = tab === 'discover' ? visible : myOffers;
+  const loading = tab === 'discover' ? loadingDiscover : loadingMine;
+
+  return (
+    <FlatList
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      data={data}
+      keyExtractor={item => String(item._id || item.id)}
+      ListHeaderComponent={header}
+      ListEmptyComponent={<Text style={styles.empty}>{loading ? 'Caricamento…' : tab === 'discover' ? 'Nessuno scambio aperto.' : 'Non hai ancora scambi o candidature.'}</Text>}
+      renderItem={tab === 'discover' ? renderDiscoverItem : renderMyItem}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={() => refreshAll({ silent: false })} />}
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      showsVerticalScrollIndicator
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0b1220', padding: 16 },
+  container: { flex: 1, backgroundColor: '#0b1220' },
+  content: { padding: 16, paddingBottom: 48, flexGrow: 1 },
   eyebrow: { color: '#5eead4', fontSize: 12, fontWeight: '800', letterSpacing: 1.5, marginTop: 8 },
   title: { color: '#fff', fontSize: 28, fontWeight: '900', marginTop: 4 },
   subtitle: { color: '#a8b3c7', lineHeight: 20, marginTop: 8, marginBottom: 12 },
@@ -410,7 +368,7 @@ const styles = StyleSheet.create({
   createToggleText: { color: '#5eead4', fontWeight: '900' },
   form: { backgroundColor: '#111b2d', borderRadius: 14, padding: 12, marginBottom: 14 },
   input: { backgroundColor: '#0b1220', color: '#fff', borderColor: '#263550', borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, marginBottom: 8 },
-  multiline: { minHeight: 72, textAlignVertical: 'top' },
+  multiline: { minHeight: 88, textAlignVertical: 'top' },
   search: { backgroundColor: '#111b2d', color: '#fff', borderColor: '#263550', borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12 },
   filters: { flexDirection: 'row', gap: 8, marginVertical: 10, flexWrap: 'wrap' },
   filter: { borderColor: '#334155', borderWidth: 1, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 8 },
@@ -418,7 +376,6 @@ const styles = StyleSheet.create({
   filterText: { color: '#cbd5e1', fontWeight: '700', fontSize: 12 },
   filterTextActive: { color: '#06131a' },
   publish: { backgroundColor: '#14b8a6', borderRadius: 10, alignItems: 'center', paddingVertical: 12 },
-  list: { paddingBottom: 40 },
   card: { backgroundColor: '#111b2d', borderColor: '#263550', borderWidth: 1, borderRadius: 16, padding: 16, marginBottom: 12 },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   badge: { color: '#5eead4', fontWeight: '800', fontSize: 11 },
@@ -448,5 +405,5 @@ const styles = StyleSheet.create({
   ratingText: { color: '#cbd5e1', fontWeight: '800' },
   ratingTextActive: { color: '#211a00' },
   reviewDone: { color: '#86efac', fontWeight: '800' },
-  empty: { color: '#94a3b8', textAlign: 'center', marginTop: 40 },
+  empty: { color: '#94a3b8', textAlign: 'center', marginTop: 32, marginBottom: 32 },
 });

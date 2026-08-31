@@ -2,7 +2,7 @@
   "expo": {
     "name": "MyZubster Lavori",
     "slug": "myzubster-app",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "scheme": "myzubster",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
