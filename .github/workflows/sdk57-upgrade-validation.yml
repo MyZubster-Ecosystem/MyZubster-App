@@ -1,0 +1,47 @@
+name: SDK 57 Upgrade Validation
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/sdk57-upgrade-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      CI: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install current lockfile
+        run: npm ci
+
+      - name: Record current dependency security state
+        run: npm audit --json > npm-audit-before.json || true
+
+      - name: Upload current audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdk57-audit-before
+          path: npm-audit-before.json
+          retention-days: 30

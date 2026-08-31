@@ -1,0 +1,93 @@
+name: Android Beta Build
+
+on:
+  pull_request:
+    paths:
+      - 'App.js'
+      - 'app.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'assets/**'
+      - '.github/workflows/android-beta-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CI: '1'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Capture npm audit evidence
+        shell: bash
+        run: |
+          npm audit --json > npm-audit.json || true
+          node - <<'NODE'
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('npm-audit.json', 'utf8'));
+          const vulnerabilities = report.vulnerabilities || {};
+          const rows = Object.entries(vulnerabilities)
+            .filter(([, v]) => ['critical', 'high'].includes(v.severity))
+            .map(([name, v]) => ({
+              name,
+              severity: v.severity,
+              direct: Boolean(v.isDirect),
+              range: v.range,
+              fixAvailable: v.fixAvailable
+            }));
+          fs.writeFileSync('npm-audit-critical-high.json', JSON.stringify(rows, null, 2));
+          console.log(`critical/high dependency entries: ${rows.length}`);
+          NODE
+
+      - name: Upload npm audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-critical-high
+          path: |
+            npm-audit.json
+            npm-audit-critical-high.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Generate Android project
+        run: npx expo prebuild --platform android --clean
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew :app:assembleDebug --stacktrace
+
+      - name: Record SHA-256
+        run: |
+          sha256sum android/app/build/outputs/apk/debug/app-debug.apk | tee MYZUBSTER-BETA-SHA256.txt
+
+      - name: Upload beta APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: myzubster-android-beta-debug
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            MYZUBSTER-BETA-SHA256.txt
+          if-no-files-found: error
+          retention-days: 30
