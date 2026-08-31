@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 const configuredUrl = Constants.expoConfig?.extra?.apiUrl ||
   (typeof process !== 'undefined' ? process.env?.EXPO_PUBLIC_API_URL : undefined);
 
-export const API_URL = (configuredUrl || 'http://192.168.1.10:3000/api').replace(/\/$/, '');
+export const API_URL = (configuredUrl || 'https://www.myzubster.com/api').replace(/\/$/, '');
 
 const api = axios.create({
   baseURL: API_URL,
