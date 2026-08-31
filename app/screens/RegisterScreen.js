@@ -12,7 +12,7 @@ export default function RegisterScreen({ navigation }) {
   const { t } = useLanguage();
 
   const handleRegister = async () => {
-    if (!email || !password || !name) {
+    if (!email.trim() || !password || !name.trim()) {
       Alert.alert('❌ ' + t('auth.registerError'), t('auth.fillAllFields'));
       return;
     }
@@ -20,10 +20,12 @@ export default function RegisterScreen({ navigation }) {
     setLoading(true);
     try {
       await register(email, password, name);
-      Alert.alert('✅ ' + t('common.success'), t('auth.registerSuccess'));
-      navigation.navigate('Login');
+      Alert.alert('✅ ' + t('common.success'), 'Account creato. Accesso effettuato.');
     } catch (error) {
-      Alert.alert('❌ ' + t('auth.registerError'), error.message || '');
+      Alert.alert(
+        '❌ ' + t('auth.registerError'),
+        error.response?.data?.message || error.response?.data?.error || error.message || 'Registrazione non riuscita.',
+      );
     } finally {
       setLoading(false);
     }
@@ -35,9 +37,11 @@ export default function RegisterScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder={t('auth.name')}
+        placeholder="Username"
         value={name}
         onChangeText={setName}
+        autoCapitalize="none"
+        autoCorrect={false}
       />
       <TextInput
         style={styles.input}
