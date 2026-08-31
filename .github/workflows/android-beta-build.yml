@@ -1,4 +1,4 @@
-name: Android Beta Build
+name: Android Lavori Standalone Build
 
 on:
   pull_request:
@@ -18,10 +18,11 @@ permissions:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     env:
       CI: '1'
       NODE_ENV: production
+      EXPO_PUBLIC_API_URL: 'https://www.myzubster.com/api'
 
     steps:
       - name: Checkout
@@ -45,19 +46,34 @@ jobs:
       - name: Generate Android project
         run: npx expo prebuild --platform android --clean
 
-      - name: Build debug APK
+      - name: Build standalone release APK
         working-directory: android
-        run: ./gradlew :app:assembleDebug --stacktrace
+        run: ./gradlew :app:assembleRelease --stacktrace
 
-      - name: Record SHA-256
-        run: sha256sum android/app/build/outputs/apk/debug/app-debug.apk | tee MYZUBSTER-BETA-SHA256.txt
+      - name: Package and verify APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="$(find android/app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' | head -n 1)"
+          if [ -z "$APK" ]; then
+            echo "Release APK not found" >&2
+            exit 1
+          fi
+          cp "$APK" MyZubster-Lavori-Standalone-v1.0.1.apk
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          if [ -z "$APKSIGNER" ]; then
+            echo "apksigner not found" >&2
+            exit 1
+          fi
+          "$APKSIGNER" verify MyZubster-Lavori-Standalone-v1.0.1.apk
+          sha256sum MyZubster-Lavori-Standalone-v1.0.1.apk | tee MYZUBSTER-LAVORI-SHA256.txt
 
-      - name: Upload beta APK
+      - name: Upload standalone Lavori APK
         uses: actions/upload-artifact@v4
         with:
-          name: myzubster-lavori-beta-debug
+          name: myzubster-lavori-standalone-v1.0.1
           path: |
-            android/app/build/outputs/apk/debug/app-debug.apk
-            MYZUBSTER-BETA-SHA256.txt
+            MyZubster-Lavori-Standalone-v1.0.1.apk
+            MYZUBSTER-LAVORI-SHA256.txt
           if-no-files-found: error
           retention-days: 30
