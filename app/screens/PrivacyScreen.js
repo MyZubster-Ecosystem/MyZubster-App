@@ -1,18 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connectOrbot, disconnectOrbot, getOrbotStatus, verifyAnonymousIp } from '../services/orbotService';
-import { getPrivacyPreferences, setUseTorProxy } from '../services/privacyService';
+import { getGatewayTransportStatus, getPrivacyPreferences, setUseTorProxy } from '../services/privacyService';
 
 export default function PrivacyScreen({ navigation }) {
   const [status, setStatus] = useState(null);
   const [busy, setBusy] = useState(false);
   const [ipResult, setIpResult] = useState(null);
   const [torPreference, setTorPreference] = useState(false);
+  const [transport, setTransport] = useState(getGatewayTransportStatus());
 
   const refresh = useCallback(async () => {
     const [nextStatus, prefs] = await Promise.all([getOrbotStatus(), getPrivacyPreferences()]);
     setStatus(nextStatus);
     setTorPreference(Boolean(prefs.useTorProxy));
+    setTransport(getGatewayTransportStatus());
   }, []);
   useEffect(() => { refresh(); }, [refresh]);
 
@@ -37,6 +39,7 @@ export default function PrivacyScreen({ navigation }) {
     try {
       const next = await setUseTorProxy(!torPreference);
       setTorPreference(Boolean(next.useTorProxy));
+      setTransport(next.transport);
     } catch (error) {
       Alert.alert('Proxy Tor', error.message || 'Impossibile salvare la preferenza.');
     } finally { setBusy(false); }
@@ -51,6 +54,8 @@ export default function PrivacyScreen({ navigation }) {
       <Text style={styles.row}>Orbot: <Text style={status.installed ? styles.ok : styles.warn}>{status.installed ? 'installato' : 'non installato'}</Text></Text>
       <Text style={styles.row}>Richiesta connessione: {status.requested ? 'attiva' : 'non attiva'}</Text>
       <Text style={styles.row}>Traffico API via SOCKS5: <Text style={status.trafficTunneled ? styles.ok : styles.warn}>{status.trafficTunneled ? 'attivo' : 'non disponibile'}</Text></Text>
+      <Text style={styles.row}>Gateway: {transport.mode === 'tor' ? 'Tor opt-in' : 'HTTPS diretto'}</Text>
+      <Text style={styles.row}>Endpoint Tor attendibili: {transport.trustedEndpointCount}</Text>
       {!status.trafficTunneled && <Text style={styles.note}>L’avvio di Orbot da solo non instrada i socket React Native. Serve una development build con un modulo proxy nativo; l’app non dichiara anonimato finché non è presente.</Text>}
     </View>
     <TouchableOpacity style={styles.button} onPress={toggle} disabled={busy}><Text style={styles.buttonText}>{status.requested ? 'Disconnetti Orbot' : status.installed ? 'Avvia Orbot' : 'Installa Orbot'}</Text></TouchableOpacity>

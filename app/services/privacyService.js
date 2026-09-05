@@ -1,16 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import api from './api';
+import { gatewayTransport } from './gatewayTransportService';
 
 const PRIVACY_PREF_KEY = '@MyZubster:privacy_preferences';
 
 const DEFAULT_PRIVACY_PREFS = {
   useTorProxy: false,
 };
-
-function applyTorPreference(enabled) {
-  if (enabled) api.defaults.headers.common['X-Tor-Requested'] = 'true';
-  else delete api.defaults.headers.common['X-Tor-Requested'];
-}
 
 export async function getPrivacyPreferences() {
   const raw = await AsyncStorage.getItem(PRIVACY_PREF_KEY);
@@ -24,14 +19,30 @@ export async function getPrivacyPreferences() {
 
 export async function setUseTorProxy(enabled) {
   const prefs = await getPrivacyPreferences();
-  const next = { ...prefs, useTorProxy: Boolean(enabled) };
+  const transport = enabled
+    ? await gatewayTransport.enableTor()
+    : gatewayTransport.useDirect();
+  const next = { ...prefs, useTorProxy: transport.mode === 'tor' };
   await AsyncStorage.setItem(PRIVACY_PREF_KEY, JSON.stringify(next));
-  applyTorPreference(next.useTorProxy);
-  return next;
+  return { ...next, transport };
 }
 
 export async function initPrivacyPreferences() {
   const prefs = await getPrivacyPreferences();
-  applyTorPreference(prefs.useTorProxy);
-  return prefs;
+  if (!prefs.useTorProxy) {
+    gatewayTransport.useDirect();
+    return prefs;
+  }
+  try {
+    await gatewayTransport.enableTor();
+    return prefs;
+  } catch {
+    const next = { ...prefs, useTorProxy: false };
+    await AsyncStorage.setItem(PRIVACY_PREF_KEY, JSON.stringify(next));
+    return next;
+  }
+}
+
+export function getGatewayTransportStatus() {
+  return gatewayTransport.snapshot();
 }

@@ -47,6 +47,14 @@ npx expo run:android
 
 Starting Orbot alone is not proof that all application traffic is tunnelled through Tor. Proxy routing must be verified independently.
 
+### Optional Tor Gateway transport
+
+Direct HTTPS remains the default. To expose the opt-in Tor mode, configure a comma-separated list of approved `.onion` Gateway API roots through `EXPO_PUBLIC_TRUSTED_TOR_GATEWAY_URLS`, or set `expo.extra.trustedTorGatewayUrls` to an array. Endpoints containing credentials, query strings, fragments, or non-HTTP protocols are rejected.
+
+When enabled, the client probes trusted endpoints without authentication data, selects the first healthy endpoint, uses a longer request timeout, and retries a network failure once only after another trusted endpoint passes its health check. If no trusted endpoint is healthy, it returns to the configured direct Gateway instead of sending credentials to an arbitrary endpoint. Transport choice does not alter Gateway authorization, jurisdiction capabilities, deep-link validation, or settlement verification.
+
+Orbot installation or launch alone is not an anonymity guarantee. A native build must provide and independently verify the proxy path used for `.onion` traffic.
+
 ## Checks
 
 ```bash
